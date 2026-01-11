@@ -1,0 +1,77 @@
+﻿@model IFixZoneWeb.Models.Entities.User
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+}
+
+<div class="container mt-4" style="max-width:720px">
+    <div class="card shadow-sm p-4">
+        <h3 class="fw-bold mb-3">
+            <i class="fa-solid fa-user-circle text-primary"></i>
+            Hồ sơ người dùng
+        </h3>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <i class="fa-solid fa-circle-user text-secondary"
+                   style="font-size:95px"></i>
+                <p class="mt-2 fw-bold fs-5">
+                    @(string.IsNullOrEmpty(Model.FullName)
+                                        ? Model.Username
+                                        : Model.FullName)
+                </p>
+                @if (Model.IsActive ?? false)
+                {
+                    <span class="badge bg-success px-3">Đang hoạt động</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger px-3">Đã khóa</span>
+                }
+            </div>
+            <div class="col-md-8">
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width:160px">Tên đăng nhập</th>
+                        <td>@Model.Username</td>
+                    </tr>
+                    <tr>
+                        <th>Họ tên</th>
+                        <td>@Model.FullName</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>@Model.Email</td>
+                    </tr>
+                    <tr>
+                        <th>Số điện thoại</th>
+                        <td>@Model.Phone</td>
+                    </tr>
+                    <tr>
+                        <th>Địa chỉ</th>
+                        <td>@Model.Address</td>
+                    </tr>
+                    <tr>
+                        <th>Ngày tạo</th>
+                        <td>@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                </table>
+                <div class="mt-4 d-flex gap-3 flex-wrap">
+                    <a class="btn btn-primary"
+                       asp-controller="Account"
+                       asp-action="EditProfile">
+                        <i class="fa-solid fa-pen me-1"></i> Chỉnh sửa hồ sơ
+                    </a>
+                    <a class="btn btn-outline-warning"
+                       asp-controller="Account"
+                       asp-action="ChangePassword">
+                        <i class="fa-solid fa-key me-1"></i> Đổi mật khẩu
+                    </a>
+                    <a class="btn btn-outline-secondary"
+                       asp-controller="Home"
+                       asp-action="Index">
+                        <i class="fa-solid fa-home me-1"></i> Quay lại trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,115 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.Product>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+<h4 class="fw-bold mb-3">
+    <i class="fa-solid fa-box"></i> Quản lý sản phẩm
+</h4>
+
+<div class="d-flex justify-content-between mb-3">
+    <form class="row g-2" method="get">
+        <div class="col-md-6">
+            <input name="q"
+                   value="@ViewBag.Query"
+                   class="form-control"
+                   placeholder="Tìm sản phẩm...">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                <i class="fa-solid fa-magnifying-glass"></i> Tìm
+            </button>
+        </div>
+    </form>
+
+    <a class="btn btn-success"
+       asp-action="Edit">
+        <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+    </a>
+</div>
+
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-light">
+        <tr>
+            <th width="90">Ảnh</th>
+            <th>Tên</th>
+            <th width="120">Giá</th>
+            <th width="90">Tồn kho</th>
+            <th width="150" class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(p.MainImage))
+                    {
+                        <img src="~/images/products/@p.MainImage" width="70" class="rounded" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </td>
+
+                <td>@p.ProductName</td>
+
+                <td>@p.Price.ToString("N0") đ</td>
+
+                <td>
+                    @if (p.Stock == 0)
+                    {
+                        <span class="badge bg-danger">Hết</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">@p.Stock</span>
+                    }
+                </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-warning"
+                       asp-action="Edit"
+                       asp-route-id="@p.ProductId">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger"
+                       asp-action="Delete"
+                       asp-route-id="@p.ProductId"
+                       onclick="return confirm('Bạn có chắc chắn xóa?');">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@{
+    var page = (int)ViewBag.Page;
+    var size = (int)ViewBag.PageSize;
+    var total = (int)ViewBag.Total;
+    var pages = (int)Math.Ceiling(total / (double)size);
+}
+
+@if (pages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= pages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a class="page-link" href="?page=@i&q=@ViewBag.Query">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

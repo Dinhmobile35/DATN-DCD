@@ -1,0 +1,149 @@
+﻿@model IFixZoneWeb.Models.Entities.Product
+@{
+    ViewData["Title"] = Model.ProductName;
+}
+
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- LEFT: IMAGE -->
+        <div class="col-md-5">
+            <div class="border rounded shadow-sm p-3 bg-white text-center">
+                @if (!string.IsNullOrEmpty(Model.MainImage))
+                {
+                    <img src="~/images/products/@Model.MainImage"
+                         class="img-fluid rounded"
+                         style="max-height:340px; object-fit:contain;"
+                         alt="@Model.ProductName" />
+                }
+                else
+                {
+                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:340px;">
+                        <i class="fa-solid fa-image fa-5x text-muted"></i>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- RIGHT: PRODUCT INFO -->
+        <div class="col-md-7">
+            <h2 class="fw-bold">@Model.ProductName</h2>
+            <span class="badge bg-secondary mb-2">
+                @Model.Category?.CategoryName
+            </span>
+            <h3 class="text-danger fw-bold mt-2">
+                @Model.Price.ToString("N0") ₫
+            </h3>
+            <p class="text-muted mt-2">@Model.Description</p>
+
+            <div class="mt-3">
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline add-to-cart-form">
+                    <input type="hidden" name="productId" value="@Model.ProductId" />
+
+                    <div class="input-group input-group-lg w-50 d-inline-flex">
+                        <span class="input-group-text">Số lượng</span>
+                        <input type="number" name="quantity" class="form-control" value="1" min="1" max="@(Model.Stock ?? 0)"
+                               @(Model.Stock <= 0 ? "disabled" : "") />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg ms-2" @(Model.Stock <= 0 ? "disabled" : "")>
+                        <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng
+                    </button>
+                </form>
+
+                <button class="btn btn-outline-dark btn-lg ms-2">
+                    <i class="fa-regular fa-heart"></i> Yêu thích
+                </button>
+            </div>
+
+            <p class="mt-3 text-success">
+                <i class="fa-solid fa-box"></i> Còn hàng: <b>@(Model.Stock ?? 0)</b>
+            </p>
+
+            @if (Model.Stock <= 0)
+            {
+                <div class="alert alert-danger mt-3">
+                    Sản phẩm hiện đã hết hàng!
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Các phần còn lại (Thông số kỹ thuật & Đánh giá) giữ nguyên như code cũ của bạn -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header fw-bold">
+            Thông số kỹ thuật
+        </div>
+        <div class="card-body">
+            @if (!Model.ProductSpecifications.Any())
+            {
+                <p>Chưa có thông số kỹ thuật.</p>
+            }
+            else
+            {
+                <table class="table table-bordered">
+                    @foreach (var spec in Model.ProductSpecifications)
+                    {
+                        <tr>
+                            <td class="fw-bold w-25">@spec.SpecName</td>
+                            <td>@spec.SpecValue</td>
+                        </tr>
+                    }
+                </table>
+            }
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header fw-bold">
+            Đánh giá sản phẩm
+        </div>
+        <div class="card-body">
+            @if (!Model.Reviews.Any())
+            {
+                <p>Chưa có đánh giá nào.</p>
+            }
+            else
+            {
+                foreach (var r in Model.Reviews)
+                {
+                    <div class="border rounded p-2 mb-2">
+                        ⭐ @r.Rating / 5 — <b>@r.User?.FullName</b>
+                        <div>@r.Comment</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.add-to-cart-form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Ngăn reload trang
+
+                    const formData = new FormData(form);
+
+                    fetch('/Cart/AddToCart', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message); // "Đã thêm vào giỏ hàng"
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra khi thêm sản phẩm');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Lỗi kết nối server');
+                    });
+                });
+            });
+        });
+    </script>
+}

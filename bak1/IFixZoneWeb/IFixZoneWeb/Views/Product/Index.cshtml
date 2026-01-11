@@ -1,0 +1,58 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.Product>
+
+<h2 class="mb-3">Danh sách sản phẩm</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Ảnh</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Tồn kho</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="width:120px">
+                    @if (!string.IsNullOrEmpty(item.MainImage))
+                    {
+                        <img src="~/images/products/@item.MainImage" width="100" />
+                    }
+                    else
+                    {
+                        <span>Không có ảnh</span>
+                    }
+                </td>
+
+                <td>
+                    <a asp-controller="Product"
+                       asp-action="Details"
+                       asp-route-id="@item.ProductId"
+                       class="fw-bold text-primary">
+                        @item.ProductName
+                    </a>
+                </td>
+
+                <td>@item.Category?.CategoryName</td>
+
+                <td>@string.Format("{0:N0} đ", item.Price)</td>
+
+                <td>@item.Stock</td>
+
+                <td>
+                    <a asp-controller="Product"
+                       asp-action="Details"
+                       asp-route-id="@item.ProductId"
+                       class="btn btn-sm btn-outline-primary">
+                        Chi tiết
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

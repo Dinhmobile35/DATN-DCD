@@ -1,0 +1,92 @@
+﻿@model IFixZoneWeb.Models.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+    var totalAmount = Model.Cart.CartItems.Sum(i => i.Quantity * i.Product.Price);
+    var totalItems = Model.Cart.CartItems.Sum(i => i.Quantity);
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2 class="mb-0 fw-bold">Thanh toán đơn hàng</h2>
+                    <p class="mb-0 mt-2">Vui lòng kiểm tra và điền thông tin giao hàng</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="row g-5">
+                        <!-- Thông tin giao hàng -->
+                        <div class="col-lg-7">
+                            <h4 class="mb-4 fw-bold text-primary"><i class="fa-solid fa-truck me-2"></i>Thông tin giao hàng</h4>
+                            <form asp-action="Process" method="post">
+                                <div class="mb-4">
+                                    <label asp-for="RecipientName" class="form-label fw-bold">Họ tên người nhận</label>
+                                    <input asp-for="RecipientName" class="form-control form-control-lg" required />
+                                    <span asp-validation-for="RecipientName" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="RecipientPhone" class="form-label fw-bold">Số điện thoại</label>
+                                    <input asp-for="RecipientPhone" class="form-control form-control-lg" required pattern="[0-9]{9,11}" title="Số điện thoại từ 9-11 số" />
+                                    <span asp-validation-for="RecipientPhone" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="RecipientAddress" class="form-label fw-bold">Địa chỉ giao hàng</label>
+                                    <textarea asp-for="RecipientAddress" class="form-control form-control-lg" rows="4" required></textarea>
+                                    <span asp-validation-for="RecipientAddress" class="text-danger"></span>
+                                </div>
+
+                                <div class="d-grid mt-5">
+                                    <button type="submit" class="btn btn-success btn-lg fw-bold">
+                                        <i class="fa-solid fa-check me-2"></i>Xác nhận đặt hàng
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tóm tắt đơn hàng -->
+                        <div class="col-lg-5">
+                            <div class="card bg-light border-0 shadow-sm h-100">
+                                <div class="card-body p-4">
+                                    <h4 class="mb-4 fw-bold text-primary">
+                                        <i class="fa-solid fa-receipt me-2"></i>Tóm tắt đơn hàng
+                                        <span class="badge bg-primary ms-2"> @totalItems sản phẩm</span>
+                                    </h4>
+
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var item in Model.Cart.CartItems)
+                                        {
+                                            <li class="list-group-item bg-transparent px-0 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>@item.Product.ProductName</strong>
+                                                    <small class="d-block text-muted">x @item.Quantity</small>
+                                                </div>
+                                                <span class="fw-bold text-danger">
+                                                    @((item.Quantity * item.Product.Price).ToString("N0")) ₫
+                                                </span>
+                                            </li>
+                                        }
+                                        <li class="list-group-item bg-transparent px-0 fw-bold d-flex justify-content-between fs-5 border-top pt-3">
+                                            <span>Tổng cộng:</span>
+                                            <span class="text-danger">@(totalAmount.ToString("N0")) ₫</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Optional: Tự động focus vào trường đầu tiên
+        document.querySelector('input[required]:first-of-type')?.focus();
+    </script>
+}

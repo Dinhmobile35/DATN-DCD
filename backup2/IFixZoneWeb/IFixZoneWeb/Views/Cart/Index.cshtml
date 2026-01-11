@@ -1,0 +1,157 @@
+﻿@model IFixZoneWeb.Models.Entities.Cart
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Giỏ hàng của bạn</h2>
+
+    @if (Model == null || !Model.CartItems.Any())
+    {
+        <div class="alert alert-info text-center">
+            Giỏ hàng trống. <a asp-controller="Product" asp-action="Index">Mua sắm ngay</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover" id="cartTable">
+                <thead>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <tr data-item-id="@item.CartItemId" data-price="@item.Product.Price">
+                            <td>
+                                <img src="~/images/products/@(item.Product.MainImage ?? "no-image.jpg")" alt="@item.Product.ProductName" style="width:80px;" />
+                            </td>
+                            <td>@item.Product.ProductName</td>
+                            <td>@item.Product.Price.ToString("N0") ₫</td>
+                            <td>
+                                <input type="number" class="form-control w-50 quantity-input" value="@item.Quantity" min="1"
+                                       data-item-id="@item.CartItemId" />
+                            </td>
+                            <td class="fw-bold subtotal">@((item.Quantity * item.Product.Price).ToString("N0")) ₫</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger remove-btn" data-item-id="@item.CartItemId">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
+                        <td class="fw-bold fs-4 text-danger" id="grandTotal">
+                            @((Model.CartItems.Sum(i => i.Quantity * i.Product.Price)).ToString("N0")) ₫
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="text-end mt-4">
+            <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-credit-card"></i> Thanh toán
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('cartTable');
+            if (!table) return;
+
+            // Cập nhật tổng tiền một dòng (subtotal)
+            function updateSubtotal(row) {
+                const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
+                const price = parseFloat(row.dataset.price) || 0;
+                const subtotal = qty * price;
+                row.querySelector('.subtotal').textContent = subtotal.toLocaleString('vi-VN') + ' ₫';
+                updateGrandTotal();
+            }
+
+            // Cập nhật tổng tiền toàn giỏ
+            function updateGrandTotal() {
+                let total = 0;
+                document.querySelectorAll('tr[data-item-id]').forEach(row => {
+                    const subtotalText = row.querySelector('.subtotal').textContent.replace(/\D/g, ''); // Loại bỏ tất cả ký tự không phải số
+                    total += parseInt(subtotalText) || 0;
+                });
+                document.getElementById('grandTotal').textContent = total.toLocaleString('vi-VN') + ' ₫';
+            }
+
+            // Cập nhật số lượng (AJAX)
+            table.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('change', function () {
+                    const itemId = this.dataset.itemId;
+                    const qty = parseInt(this.value);
+                    if (qty < 1) this.value = 1;
+
+                    fetch('/Cart/UpdateQuantity', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ cartItemId: itemId, quantity: qty })
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Lỗi server');
+                        return response.json();
+                    })
+                    .then(() => {
+                        updateSubtotal(this.closest('tr'));
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Lỗi cập nhật số lượng');
+                    });
+                });
+            });
+
+            // Xóa item (AJAX)
+            table.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    if (!confirm('Xóa sản phẩm này?')) return;
+
+                    const itemId = this.dataset.itemId;
+                    const row = this.closest('tr');
+
+                    fetch('/Cart/RemoveItem', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ cartItemId: itemId })
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Lỗi server');
+                        return response.json();
+                    })
+                    .then(() => {
+                        row.remove();
+                        updateGrandTotal();
+                        if (table.querySelectorAll('tr[data-item-id]').length === 0) {
+                            location.reload(); // Reload nếu giỏ trống
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Lỗi xóa sản phẩm');
+                    });
+                });
+            });
+
+            // Khởi tạo tổng tiền ban đầu
+            updateGrandTotal();
+        });
+    </script>
+}

@@ -1,0 +1,137 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Order>
+@{
+    Layout = "_AdminLayout";  // <-- QUAN TRỌNG: Dòng này phải có để dùng layout admin
+}
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    int currentPage = ViewBag.Page ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string? query = ViewBag.Query;
+    string? selectedStatus = ViewBag.Status ?? "all";
+}
+
+<div class="container-fluid py-4">
+    <h2 class="mb-4 fw-bold">
+        <i class="fa-solid fa-shopping-bag me-2"></i> Quản lý đơn hàng
+    </h2>
+
+    <!-- Tìm kiếm & Lọc -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Tìm kiếm</label>
+                    <input type="text" name="q" value="@query" class="form-control" placeholder="Mã đơn, tên khách, SĐT...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Trạng thái</label>
+                    <select name="status" class="form-select">
+                        <option value="all" selected="@(selectedStatus == "all")">Tất cả trạng thái</option>
+                        @foreach (var status in ViewBag.OrderStatuses)
+                        {
+                            <option value="@status" selected="@(selectedStatus == status)">@status</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa-solid fa-search me-2"></i>Lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered mb-0 align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Mã đơn</th>
+                                <th>Khách hàng</th>
+                                <th class="text-end">Tổng tiền</th>
+                                <th>Ngày đặt</th>
+                                <th>Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr>
+                                    <td><strong>#@order.OrderCode</strong></td>
+                                    <td>
+                                        <strong>@order.RecipientName</strong><br>
+                                        <small class="text-muted">@order.RecipientPhone</small>
+                                    </td>
+                                    <td class="text-end fw-bold text-danger">
+                                        @(order.TotalAmount?.ToString("N0") ?? "0") ₫
+                                    </td>
+                                    <td>@(order.OrderDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</td>
+                                    <td>
+                                        <span class="badge bg-@GetStatusColor(order.Status) fs-6 px-3 py-2">
+                                            @order.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@order.OrderId"
+                                               class="btn btn-sm btn-info" title="Xem chi tiết">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            <a asp-action="Print" asp-route-id="@order.OrderId"
+                                               target="_blank"
+                                               class="btn btn-sm btn-success" title="In đơn hàng">
+                                                <i class="fa-solid fa-print"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phân trang -->
+        @if (totalPages > 1)
+        {
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-q="@query" asp-route-status="@selectedStatus">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="fa-solid fa-inbox fa-3x mb-3"></i>
+            <p class="mb-0">Không tìm thấy đơn hàng nào</p>
+        </div>
+    }
+</div>
+
+@functions {
+    string GetStatusColor(string? status) => status switch
+    {
+        "Mới" => "primary",
+        "Xác nhận" => "info",
+        "Đang chuẩn bị" => "warning",
+        "Đang giao" => "secondary",
+        "Hoàn thành" => "success",
+        "Hủy" => "danger",
+        _ => "secondary"
+    };
+}

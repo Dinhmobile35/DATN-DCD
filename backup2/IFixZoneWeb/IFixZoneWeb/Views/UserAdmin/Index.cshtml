@@ -1,0 +1,40 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.User>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h4 class="fw-bold mb-3">Quản lý người dùng</h4>
+
+<a asp-action="Edit" class="btn btn-success mb-2">+ Thêm người dùng</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tài khoản</th>
+            <th>Họ tên</th>
+            <th>Quyền</th>
+            <th width="220"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Username</td>
+                <td>@u.FullName</td>
+                <td>@string.Join(", ", u.Roles.Select(r => r.RoleName))</td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@u.UserId" class="btn btn-warning btn-sm">Sửa</a>
+
+                    <a asp-action="Delete" asp-route-id="@u.UserId"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Xóa người dùng này?');">
+                        Xóa
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

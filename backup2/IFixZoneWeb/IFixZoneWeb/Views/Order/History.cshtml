@@ -1,0 +1,138 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Order>
+
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4 fw-bold text-center">Lịch sử đơn hàng của bạn</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="fa-solid fa-shopping-bag fa-4x mb-3 text-muted"></i>
+            <p class="fs-5">Bạn chưa có đơn hàng nào.</p>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg mt-3">
+                <i class="fa-solid fa-shopping-cart me-2"></i>Mua sắm ngay
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="accordion" id="orderAccordion">
+            @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
+            {
+                var statusClass = order.Status switch
+                {
+                    "Mới" => "bg-info",
+                    "Đang xử lý" => "bg-warning",
+                    "Đang giao" => "bg-primary",
+                    "Hoàn thành" => "bg-success",
+                    "Đã hủy" => "bg-danger",
+                    _ => "bg-secondary"
+                };
+
+                <div class="accordion-item mb-3 shadow-sm rounded-3 overflow-hidden">
+                    <h2 class="accordion-header" id="heading_@order.OrderId">
+                        <button class="accordion-button @statusClass text-white fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@order.OrderId" aria-expanded="false" aria-controls="collapse_@order.OrderId">
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <span>Mã đơn: <strong>@order.OrderCode</strong> - @order.OrderDate?.ToString("dd/MM/yyyy HH:mm")</span>
+                                <span class="badge bg-light text-dark ms-3">@order.Status</span>
+                            </div>
+                        </button>
+                    </h2>
+
+                    <div id="collapse_@order.OrderId" class="accordion-collapse collapse" aria-labelledby="heading_@order.OrderId" data-bs-parent="#orderAccordion">
+                        <div class="accordion-body bg-light">
+                            <!-- Thông tin giao hàng -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Thông tin giao hàng</h6>
+                                    <p class="mb-1">
+                                        <strong>Người nhận:</strong> @order.RecipientName <br />
+                                        <strong>Số điện thoại:</strong> @order.RecipientPhone <br />
+                                        <strong>Địa chỉ:</strong> @order.RecipientAddress
+                                    </p>
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <h6 class="fw-bold">Tổng tiền</h6>
+                                    <h5 class="text-danger">@order.TotalAmount?.ToString("N0") ₫</h5>
+                                </div>
+                            </div>
+
+                            <!-- Chi tiết sản phẩm -->
+                            <h6 class="fw-bold mb-3">Chi tiết sản phẩm</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th>Số lượng</th>
+                                            <th>Đơn giá</th>
+                                            <th>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detail in order.OrderDetails)
+                                        {
+                                            <tr>
+                                                <td>@detail.Product?.ProductName</td>
+                                                <td>@detail.Quantity</td>
+                                                <td>@detail.UnitPrice.ToString("N0") ₫</td>
+                                                <td class="fw-bold">@(detail.Quantity * detail.UnitPrice).ToString("N0") ₫</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Lịch sử trạng thái -->
+                            @if (order.OrderStatusHistories.Any())
+                            {
+                                <h6 class="fw-bold mt-4 mb-3">Lịch sử trạng thái</h6>
+                                <ul class="list-group">
+                                    @foreach (var history in order.OrderStatusHistories.OrderByDescending(h => h.UpdatedAt))
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">@history.Status</span>
+                                            <small class="text-muted">@history.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</small>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted mt-3">Chưa có lịch sử trạng thái.</p>
+                            }
+
+                            <!-- Nút hủy đơn (nếu trạng thái "Mới") -->
+                            @if (order.Status == "Mới")
+                            {
+                                <form asp-action="Cancel" asp-controller="Order" method="post" class="mt-4 text-end">
+                                    <input type="hidden" name="id" value="@order.OrderId" />
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');">
+                                        <i class="fa-solid fa-ban me-2"></i>Hủy đơn
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Optional: Tự động mở accordion nếu có TempData Success
+        document.addEventListener('DOMContentLoaded', function () {
+            if ('@TempData["Success"]' !== '') {
+                const firstCollapse = document.querySelector('.accordion-collapse');
+                if (firstCollapse) {
+                    new bootstrap.Collapse(firstCollapse, { toggle: true });
+                }
+            }
+        });
+    </script>
+}

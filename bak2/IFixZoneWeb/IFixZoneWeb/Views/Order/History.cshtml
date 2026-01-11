@@ -1,0 +1,165 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Order>
+@using IFixZoneWeb.Models.Entities
+
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+    var currentStatus = ViewBag.CurrentStatus ?? "Tất cả";
+}
+
+<div class="container py-4">
+    <!-- Tab lọc trạng thái (theo hình bạn gửi) -->
+    <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto" id="orderStatusTabs">
+        <li class="nav-item">
+            <a class="nav-link @(currentStatus == "Mới" ? "active" : "")" asp-action="History" asp-route-status="Mới">Mới</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentStatus == "Xác nhận" ? "active" : "")" asp-action="History" asp-route-status="Xác nhận">Xác nhận</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentStatus == "Đang chuẩn bị" ? "active" : "")" asp-action="History" asp-route-status="Đang chuẩn bị">Đang chuẩn bị</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentStatus == "Đang giao" ? "active" : "")" asp-action="History" asp-route-status="Đang giao">Đang giao</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentStatus == "Hoàn thành" ? "active" : "")" asp-action="History" asp-route-status="Hoàn thành">Hoàn thành</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentStatus == "Hủy" ? "active" : "")" asp-action="History" asp-route-status="Hủy">Hủy</a>
+        </li>
+    </ul>
+
+    <!-- Thanh tìm kiếm -->
+    <div class="input-group mb-4">
+        <input type="text" class="form-control" placeholder="Tìm theo tên Shop, ID đơn hàng hoặc tên sản phẩm" id="searchInput" onkeyup="filterOrders()">
+        <button class="btn btn-outline-secondary" type="button">
+            <i class="fa-solid fa-search"></i>
+        </button>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="fa-solid fa-shopping-bag fa-4x mb-3 text-muted"></i>
+            <p class="fs-5">Bạn chưa có đơn hàng nào.</p>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg mt-3">
+                <i class="fa-solid fa-shopping-cart me-2"></i>Mua sắm ngay
+            </a>
+        </div>
+    }
+    else
+    {
+        <div id="orderList">
+            @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
+            {
+                <div class="card mb-4 shadow-sm order-card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                        <div>
+                            <strong>Mã đơn: @order.OrderCode</strong> - @(order.OrderDate?.ToString("dd/MM/yyyy HH:mm") ?? "Không xác định")
+                        </div>
+                        <span class="badge bg-@(order.Status switch { "Hoàn thành" => "success", "Hủy" => "danger", _ => "warning" })">
+                            @(order.Status ?? "Không xác định")
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Shop info (giả lập) -->
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-store me-2 text-primary"></i>
+                            <strong>Hardware Home.vn</strong>
+                        </div>
+
+                        <!-- Chỉ hiển thị sản phẩm đầu tiên -->
+                        @if (order.OrderDetails != null && order.OrderDetails.Any())
+                        {
+                            var firstDetail = order.OrderDetails.First();
+                            <div class="d-flex mb-3 border-bottom pb-3">
+                                <img src="~/images/products/@(firstDetail.Product?.MainImage ?? "no-image.jpg")" alt="@firstDetail.Product?.ProductName" style="width:80px; height:80px; object-fit:contain;" class="me-3 border rounded">
+                                <div class="flex-grow-1">
+                                    <p class="mb-1 fw-bold">@(firstDetail.Product?.ProductName ?? "Sản phẩm không xác định")</p>
+                                    <small class="text-muted">Phân loại: 1 chai</small>
+                                    <p class="mb-0 text-danger fw-bold">
+                                        @(firstDetail.UnitPrice.ToString("N0")) ₫ x @firstDetail.Quantity
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Nếu có nhiều sản phẩm hơn, hiển thị nút mở rộng -->
+                            @if (order.OrderDetails.Count > 1)
+                            {
+                                <p class="text-muted mb-2">
+                                    + @(order.OrderDetails.Count - 1) sản phẩm khác
+                                    <button class="btn btn-sm btn-link text-primary p-0 ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#moreProducts_@order.OrderId">
+                                        Xem thêm
+                                    </button>
+                                </p>
+                                <div class="collapse" id="moreProducts_@order.OrderId">
+                                    @foreach (var detail in order.OrderDetails.Skip(1))
+                                    {
+                                        <div class="d-flex mb-3 border-bottom pb-3">
+                                            <img src="~/images/products/@(detail.Product?.MainImage ?? "no-image.jpg")" alt="@detail.Product?.ProductName" style="width:60px; height:60px; object-fit:contain;" class="me-3 border rounded">
+                                            <div class="flex-grow-1">
+                                                <p class="mb-1 fw-bold">@(detail.Product?.ProductName ?? "Sản phẩm không xác định")</p>
+                                                <small class="text-muted">Phân loại: 1 chai</small>
+                                                <p class="mb-0 text-danger fw-bold">
+                                                    @(detail.UnitPrice.ToString("N0")) ₫ x @detail.Quantity
+                                                </p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">Không có sản phẩm trong đơn hàng này.</p>
+                        }
+
+                        <!-- Tổng tiền & Ngày nhận -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <div>
+                                <small class="text-muted">Thành tiền:</small>
+                                <h5 class="mb-0 text-danger">@(order.TotalAmount?.ToString("N0") ?? "0") ₫</h5>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">Ngày nhận hàng dự kiến:</small>
+                                <p class="mb-0">@(order.OrderDate?.AddDays(3).ToString("dd-MM-yyyy") ?? "Không xác định")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer buttons (bỏ chat, xem shop, liên hệ) -->
+                    <div class="card-footer bg-light d-flex justify-content-end">
+                        @if (order.Status == "Mới" || order.Status == "Chờ thanh toán")
+                        {
+                            <form asp-action="Cancel" asp-controller="Order" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@order.OrderId" />
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');">
+                                    <i class="fa-solid fa-ban me-2"></i>Hủy đơn hàng
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Tìm kiếm realtime
+        function filterOrders() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.order-card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(input) ? '' : 'none';
+            });
+        }
+
+        // Focus vào search khi load
+        document.getElementById('searchInput')?.focus();
+    </script>
+}

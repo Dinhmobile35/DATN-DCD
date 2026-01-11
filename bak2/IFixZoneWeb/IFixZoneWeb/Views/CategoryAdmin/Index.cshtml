@@ -1,0 +1,80 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.Category>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<h4 class="fw-bold mb-3">
+    <i class="fa-solid fa-layer-group"></i> Quản lý danh mục
+</h4>
+
+<div class="d-flex justify-content-between mb-3">
+    <form method="get" class="row g-2">
+        <div class="col-md-6">
+            <input name="q" value="@ViewBag.Query" class="form-control" placeholder="Tìm danh mục...">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                <i class="fa-solid fa-magnifying-glass"></i> Tìm
+            </button>
+        </div>
+    </form>
+
+    <a class="btn btn-success" asp-action="Edit">
+        <i class="fa-solid fa-plus"></i> Thêm danh mục
+    </a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th width="70">ID</th>
+            <th>Tên danh mục</th>
+            <th width="140" class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.CategoryId</td>
+                <td>@c.CategoryName</td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@c.CategoryId">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger"
+                       asp-action="Delete"
+                       asp-route-id="@c.CategoryId"
+                       onclick="return confirm('Xóa danh mục này?');">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var page = (int)ViewBag.Page;
+    var size = (int)ViewBag.PageSize;
+    var total = (int)ViewBag.Total;
+    var pages = (int)Math.Ceiling(total / (double)size);
+}
+
+@if (pages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= pages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a class="page-link" href="?page=@i&q=@ViewBag.Query">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
