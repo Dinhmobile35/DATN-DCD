@@ -1,0 +1,858 @@
+﻿@model IFixZoneWeb.Models.Entities.Product
+@{
+    ViewData["Title"] = Model.ProductName;
+}
+@{
+    var breadcrumb = ViewBag.Breadcrumb as List<IFixZoneWeb.Models.Entities.Category> ?? new();
+}
+
+<nav class="ifixit-breadcrumb mb-4" aria-label="breadcrumb">
+    <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+
+    @for (int i = 0; i < breadcrumb.Count; i++)
+    {
+        <span class="sep">/</span>
+
+        if (i < breadcrumb.Count - 1)
+        {
+            <a asp-controller="Category"
+               asp-action="Index"
+               asp-route-id="@breadcrumb[i].CategoryId">
+                @breadcrumb[i].CategoryName
+            </a>
+        }
+        else
+        {
+            <span class="current">@breadcrumb[i].CategoryName</span>
+        }
+    }
+</nav>
+
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- IMAGE (to hơn) -->
+        <div class="col-md-5">
+            <div class="product-image-zoom">
+
+                <!-- IMAGE + LENS -->
+                <div class="zoom-container" id="zoomContainer">
+                    <img id="mainImage"
+                         class="product-main-image"
+                         src="~/images/products/@Model.MainImage"
+                         alt="@Model.ProductName" />
+
+                    <div id="zoomLens"></div>
+                </div>
+
+                <!-- ZOOM RESULT (HOVER) -->
+                <div class="zoom-result" id="zoomResult"></div>
+            </div>
+        </div>
+
+        <!-- ZOOM OVERLAY (CLICK) -->
+        <div id="zoomOverlay">
+            <img id="zoomOverlayImg" />
+        </div>
+
+
+
+        <!-- INFO -->
+        <div class="col-md-7">
+            <h2 class="fw-bold">@Model.ProductName</h2>
+            <span class="badge bg-secondary mb-2">
+                @Model.Category?.CategoryName
+            </span>
+            <h3 class="price">@Model.Price.ToString("N0") ₫</h3>
+     
+            <p class="stock">
+                <i class="fa-solid fa-box"></i>
+                @if (Model.Stock > 0)
+                {
+                    <span>Còn <b>@Model.Stock</b> sản phẩm</span>
+                }
+                else
+                {
+                    <span class="text-danger fw-bold">Hết hàng</span>
+                }
+            </p>
+
+            <form class="add-to-cart-form">
+                <input type="hidden" name="productId" value="@Model.ProductId" />
+                <div class="qty-box">
+                    <button type="button"
+                            onclick="changeQty(-1)"
+                            @(Model.Stock <= 0 ? "disabled" : "")>
+                        −
+                    </button>
+                    <input id="qty"
+                           type="number"
+                           name="quantity"
+                           value="1"
+                           min="1"
+                           max="@Model.Stock"
+                           @(Model.Stock <= 0 ? "disabled" : "") />
+
+                    <button type="button"
+                            onclick="changeQty(1)"
+                            @(Model.Stock <= 0 ? "disabled" : "")>
+                        +
+                    </button>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit"
+                            class="btn-cart"
+                            @(Model.Stock <= 0 ? "disabled" : "")>
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Thêm vào giỏ
+                    </button>
+                    <button type="button"
+                            class="btn-buy-now"
+                            onclick="buyNow(@Model.ProductId)"
+                            @(Model.Stock <= 0 ? "disabled" : "")>
+                        Mua ngay
+                    </button>
+
+
+                </div>
+            </form>
+
+            
+        </div>
+    </div>
+<!-- DESCRIPTION & SPEC SIDE BY SIDE -->
+<div class="row g-4 mt-5">
+
+    <!-- DESCRIPTION (LEFT) -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-bold">
+                Mô tả sản phẩm
+            </div>
+            <div class="card-body">
+                @if (string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p>Chưa có mô tả chi tiết.</p>
+                }
+                else
+                {
+                    <div class="product-description">
+                        @Html.Raw(Model.Description)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- SPECIFICATION (RIGHT) -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-bold">
+                Thông số kỹ thuật
+            </div>
+            <div class="card-body">
+                @if (!Model.ProductSpecifications.Any())
+                {
+                    <p>Chưa có thông số kỹ thuật.</p>
+                }
+                else
+                {
+                    <table class="table table-bordered mb-0">
+                        @foreach (var spec in Model.ProductSpecifications)
+                        {
+                            <tr>
+                                <td class="fw-bold w-40">@spec.SpecName</td>
+                                <td>@spec.SpecValue</td>
+                            </tr>
+                        }
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+    <!-- RELATED PRODUCTS -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="related-wrapper">
+                <h4 class="fw-bold mb-3">Sản phẩm liên quan</h4>
+
+                <!-- SKELETON -->
+                <div class="related-skeleton" id="relatedSkeleton">
+                    @for (int i = 0; i < 4; i++)
+                    {
+                        <div class="skeleton-card"></div>
+                    }
+                </div>
+
+                <!-- SLIDER -->
+                <div class="related-slider d-none" id="relatedSlider">
+                    <div class="related-track" id="relatedTrack"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- REVIEWS -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header fw-bold">
+            Đánh giá sản phẩm
+        </div>
+        <div class="card-body">
+            @if (!Model.Reviews.Any())
+            {
+                <p>Chưa có đánh giá nào.</p>
+            }
+            else
+            {
+                foreach (var r in Model.Reviews)
+                {
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="star-rating me-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= r.Rating)
+                                    {
+                                        <i class="fa-solid fa-star text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-star text-warning"></i>
+                                    }
+                                }
+                            </span>
+                            <b>@r.User?.FullName</b>
+                        </div>
+                        <p class="mb-0">@r.Comment</p>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMsg"></span>
+    <a href="/Cart" class="toast-link">Xem giỏ</a>
+</div>
+
+<script>
+    /* ================= ANTI FORGERY ================= */
+    const antiForgeryToken =
+        document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+    /* ================= TOAST ================= */
+    function showToast(msg, isError = false) {
+        const t = document.getElementById("toast");
+        const msgEl = document.getElementById("toastMsg");
+
+        msgEl.innerText = msg;
+        t.classList.toggle("error", isError);
+        t.classList.add("show");
+
+        setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    /* ================= CART BOUNCE ================= */
+    function cartBounce() {
+        const cart = document.getElementById("cartToggle");
+        if (!cart) return;
+
+        cart.classList.add("cart-bounce");
+        setTimeout(() => cart.classList.remove("cart-bounce"), 600);
+    }
+
+    /* ================= FLY IMAGE ================= */
+    function flyToCart() {
+        const img = document.querySelector(".product-main-image");
+        const cart = document.getElementById("cartToggle");
+        if (!img || !cart) return;
+
+        const clone = img.cloneNode(true);
+        const imgRect = img.getBoundingClientRect();
+        const cartRect = cart.getBoundingClientRect();
+
+        clone.style.cssText = `
+            position: fixed;
+            z-index: 9999;
+            width: ${imgRect.width}px;
+            height: ${imgRect.height}px;
+            top: ${imgRect.top}px;
+            left: ${imgRect.left}px;
+            transition: all .8s cubic-bezier(.4,0,.2,1);
+            pointer-events: none;
+        `;
+
+        document.body.appendChild(clone);
+
+        requestAnimationFrame(() => {
+            clone.style.top = cartRect.top + "px";
+            clone.style.left = cartRect.left + "px";
+            clone.style.width = "20px";
+            clone.style.height = "20px";
+            clone.style.opacity = "0.3";
+        });
+
+        setTimeout(() => clone.remove(), 900);
+    }
+
+    /* ================= ADD TO CART ================= */
+    const form = document.querySelector(".add-to-cart-form");
+    const btnAdd = form.querySelector("button[type='submit']");
+    const qtyInput = form.querySelector("input[name='quantity']");
+
+        form.addEventListener("submit", e => {
+        e.preventDefault();
+
+        // 🚫 HẾT HÀNG → CHẶN NGAY
+        if (@Model.Stock <= 0) {
+            showToast("Sản phẩm đã hết hàng", true);
+            return;
+        }
+
+        const qty = parseInt(qtyInput.value) || 1;
+
+        btnAdd.disabled = true;
+
+        const formData = new URLSearchParams(new FormData(form));
+
+        fetch("/Cart/AddToCart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "RequestVerificationToken": antiForgeryToken
+            },
+            body: formData.toString()
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.success) {
+                showToast("Đã thêm vào giỏ hàng");
+                flyToCart();
+                cartBounce();
+                loadMiniCart();
+            } else {
+                showToast(d.message || "Không thể thêm sản phẩm", true);
+
+                if (d.message?.includes("Chỉ còn")) {
+                    qtyInput.value = qtyInput.max;
+                }
+            }
+        })
+        .catch(() => showToast("Lỗi kết nối server", true))
+        .finally(() => btnAdd.disabled = false);
+    });
+
+</script>
+
+<script>
+    /* ===== LOAD RELATED PRODUCTS ===== */
+    function loadRelatedProducts() {
+        fetch(`/Product/GetRelated?productId=@Model.ProductId`)
+            .then(r => r.json())
+            .then(data => {
+                const track = document.getElementById("relatedTrack");
+                const skeleton = document.getElementById("relatedSkeleton");
+                const slider = document.getElementById("relatedSlider");
+
+                if (!track || !slider) return;
+
+                skeleton?.remove();
+                slider.classList.remove("d-none");
+
+                track.innerHTML = "";
+
+                data.forEach(p => {
+                    track.insertAdjacentHTML("beforeend", `
+                        <a class="related-card" href="/Product/Details/${p.productId}">
+                            <img src="/images/products/${p.mainImage}" loading="lazy">
+                            <div class="name">${p.productName}</div>
+                            <div class="price">${p.price.toLocaleString()} ₫</div>
+                            <div class="rating">
+                                ${'★'.repeat(Math.floor(p.rating || 0))}
+                                ${'☆'.repeat(5 - Math.floor(p.rating || 0))}
+                            </div>
+                        </a>
+                    `);
+                });
+
+                initRelatedSlider();
+            });
+    }
+
+    /* ===== RELATED SLIDER AUTO LOOP ===== */
+    function initRelatedSlider() {
+        const track = document.getElementById("relatedTrack");
+        if (!track || track.children.length === 0) return;
+
+        const cards = [...track.children];
+        const gap = 20;
+        const cardWidth = cards[0].offsetWidth + gap;
+
+        // clone để loop vô hạn
+        cards.forEach(c => track.appendChild(c.cloneNode(true)));
+
+        let index = 0;
+
+        setInterval(() => {
+            index++;
+            track.style.transition = "transform .45s ease";
+            track.style.transform = `translateX(${-index * cardWidth}px)`;
+
+            if (index >= cards.length) {
+                setTimeout(() => {
+                    track.style.transition = "none";
+                    track.style.transform = "translateX(0)";
+                    index = 0;
+                }, 450);
+            }
+        }, 3000);
+    }
+
+    // 🚀 AUTO LOAD khi vào trang
+    document.addEventListener("DOMContentLoaded", loadRelatedProducts);
+</script>
+<script>
+    // ===== QTY GLOBAL (BẮT BUỘC) =====
+    window.changeQty = function (step) {
+        const input = document.getElementById("qty");
+        if (!input) return;
+
+        let value = parseInt(input.value || 1, 10);
+        const min = parseInt(input.min || 1, 10);
+        const max = parseInt(input.max || 9999, 10);
+
+        value += step;
+
+        if (value < min) value = min;
+        if (value > max) value = max;
+
+        input.value = value;
+    };
+</script>
+<script>
+    function buyNow(productId) {
+        const qtyInput = document.getElementById("qty");
+        let quantity = parseInt(qtyInput?.value || 1);
+
+        if (quantity < 1) quantity = 1;
+
+        // Điều hướng sang BuyNow kèm quantity
+        window.location.href =
+            `/Checkout/BuyNow?productId=${productId}&quantity=${quantity}`;
+    }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const img = document.getElementById("mainImage");
+        const lens = document.getElementById("zoomLens");
+        const container = document.getElementById("zoomContainer");
+        const result = document.getElementById("zoomResult");
+
+        const overlay = document.getElementById("zoomOverlay");
+        const overlayImg = document.getElementById("zoomOverlayImg");
+
+        const zoom = 2.5;
+
+        /* ===== INIT ===== */
+        result.style.backgroundImage = `url('${img.src}')`;
+        result.style.backgroundSize = `${zoom * 100}%`;
+
+        /* ===== HOVER ZOOM (LENS) ===== */
+        container.addEventListener("mouseenter", () => {
+            container.classList.add("zoom-active");
+        });
+
+        container.addEventListener("mouseleave", () => {
+            container.classList.remove("zoom-active");
+        });
+
+        container.addEventListener("mousemove", moveLens);
+
+        function moveLens(e) {
+           const rect = container.getBoundingClientRect();
+
+            let x = e.clientX - rect.left;
+            let y = e.clientY - rect.top;
+
+            const lensW = lens.offsetWidth / 2;
+            const lensH = lens.offsetHeight / 2;
+
+            x = Math.max(lensW, Math.min(x, rect.width - lensW));
+            y = Math.max(lensH, Math.min(y, rect.height - lensH));
+
+            lens.style.left = (x - lensW) + "px";
+            lens.style.top  = (y - lensH) + "px";
+
+            const bgX = (x / rect.width) * 100;
+            const bgY = (y / rect.height) * 100;
+
+            result.style.backgroundPosition = `${bgX}% ${bgY}%`;
+        }
+
+        /* ===== CLICK → FULLSCREEN ZOOM ===== */
+        img.addEventListener("click", () => {
+            overlayImg.src = img.src;
+            overlay.classList.add("show");
+        });
+
+        overlay.addEventListener("click", () => {
+            overlay.classList.remove("show");
+        });
+    });
+</script>
+
+
+<style>
+    /* ==== IMAGE (to hơn) ==== */
+    .product-image-box {
+        background: #fff;
+        border-radius: 18px;
+        padding: 25px;
+        border: 1px solid #eee;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        height: 460px; /* tăng chiều cao để hình to hơn */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .product-image-box img {
+            max-height: 420px; /* hình chính to hơn */
+            width: 100%;
+            object-fit: contain;
+        }
+
+    .no-image {
+        font-size: 120px;
+        color: #ddd;
+    }
+
+    /* ==== PRICE ==== */
+    .price {
+        color: #d70018;
+        font-weight: 800;
+        font-size: 2.2rem;
+    }
+
+    /* ==== QTY ==== */
+    .qty-box {
+        display: inline-flex;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-right: 12px;
+    }
+
+        .qty-box button {
+            width: 50px;
+            border: none;
+            background: #f3f4f6;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .qty-box input {
+            width: 70px;
+            border: none;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+    /* ==== BUTTON (căn chỉnh lại) ==== */
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .btn-cart, .btn-buy-now {
+        flex: 1 1 180px;
+        padding: 14px 28px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .btn-cart {
+        background: #d70018;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-buy-now {
+        background: #111;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    /* ==== RELATED (kéo dài thẻ) ==== */
+    .related-wrapper {
+        background: #fff;
+        padding: 24px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        height: 100%;
+    }
+
+    .related-slider {
+        overflow: hidden;
+    }
+
+    .related-track {
+        display: flex;
+        gap: 20px;
+    }
+
+    .related-card {
+        min-width: 210px;
+        padding: 16px;
+        border-radius: 16px;
+        background: #fff;
+        text-align: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
+        transition: .3s;
+        color: #111;
+        text-decoration: none;
+        height: 320px; /* kéo dài thẻ */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .related-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0,0,0,.15);
+        }
+
+        .related-card img {
+            height: 140px;
+            width: 100%;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .related-card .name {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .related-card .price {
+            color: #d70018;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .related-card .rating {
+            color: #f39c12;
+            font-size: 1.1rem;
+        }
+
+    /* ==== SKELETON ==== */
+    .related-skeleton {
+        display: flex;
+        gap: 20px;
+    }
+
+    .skeleton-card {
+        width: 210px;
+        height: 320px;
+        border-radius: 16px;
+        background: linear-gradient(90deg,#eee,#f5f5f5,#eee);
+        animation: s 1.4s infinite;
+    }
+
+    @@keyframes s {
+        0% {
+            background-position: 0
+        }
+
+        100% {
+            background-position: 200%
+        }
+    }
+
+    /* ==== TOAST ==== */
+    .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        background: #16a34a;
+        color: #fff;
+        padding: 14px 18px;
+        border-radius: 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: .35s;
+        z-index: 9999;
+    }
+
+        .toast.show {
+            opacity: 1;
+            transform: none;
+        }
+
+    .toast-link {
+        color: #fff;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    .cart-bounce {
+        animation: bounce .6s;
+    }
+    @@keyframes bounce {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    30% {
+        transform: scale(1.25);
+    }
+
+    60% {
+        transform: scale(.9);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+
+    button:disabled,
+    input:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    .btn-cart:disabled {
+        background: #aaa;
+    }
+
+    .btn-buy-now:disabled {
+        background: #555;
+    }
+    /* ================= IMAGE WRAPPER ================= */
+    .product-image-zoom {
+        background: #fff;
+        border-radius: 18px;
+        padding: 24px;
+        border: 1px solid #eee;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    /* ================= CONTAINER ================= */
+    .zoom-container {
+        position: relative;
+        width: 100%;
+        height: 460px; /* ép khung TO */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    /* ================= MAIN IMAGE ================= */
+    .product-main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* KHÔNG BỊ MÉO */
+        cursor: zoom-in;
+        display: block;
+    }
+
+    /* ================= LENS ================= */
+    #zoomLens {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        background: rgba(215,0,24,.18);
+        border: 2px solid #d70018;
+        border-radius: 10px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .15s ease;
+    }
+
+    /* ================= OVERLAY ================= */
+    #zoomOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .25s ease;
+    }
+
+        #zoomOverlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        #zoomOverlay img {
+            max-width: 75vw;
+            max-height: 75vh;
+            background: #fff;
+            padding: 18px;
+            border-radius: 18px;
+            box-shadow: 0 30px 80px rgba(0,0,0,.6);
+        }
+    /* ===== SHOW LENS + RESULT WHEN HOVER ===== */
+    .zoom-container.zoom-active #zoomLens {
+        opacity: 1;
+    }
+
+    .zoom-container.zoom-active + .zoom-result {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    /* ================= ZOOM RESULT ================= */
+    .zoom-result {
+        position: absolute;
+        top: 0;
+        left: 105%;
+        width: 420px;
+        height: 420px;
+        background-repeat: no-repeat;
+        border-radius: 16px;
+        border: 1px solid #eee;
+        box-shadow: 0 10px 30px rgba(0,0,0,.15);
+        opacity: 0;
+        transition: opacity .2s ease;
+        z-index: 5;
+    }
+    /* ===== BREADCRUMB ===== */
+    .ifixit-breadcrumb {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 14px;
+    }
+
+        .ifixit-breadcrumb a {
+            color: #d70018;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .ifixit-breadcrumb span {
+            margin: 0 6px;
+        }
+
+</style>

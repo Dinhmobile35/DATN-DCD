@@ -1,0 +1,174 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Product>
+
+@{
+    var category = ViewBag.Category as IFixZoneWeb.Models.Entities.Category;
+    ViewData["Title"] = category?.CategoryName ?? "Sản phẩm";
+    var breadcrumb = ViewBag.Breadcrumb as List<IFixZoneWeb.Models.Entities.Category> ?? new();
+}
+
+<div class="ifixit-wrapper">
+
+    <!-- ===== BREADCRUMB ===== -->
+    <nav class="ifixit-breadcrumb mb-4">
+        <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+
+        @foreach (var bc in breadcrumb)
+        {
+            <span>/</span>
+            <a asp-controller="Category"
+               asp-action="Index"
+               asp-route-id="@bc.CategoryId">
+                @bc.CategoryName
+            </a>
+        }
+    </nav>
+
+    <!-- ===== TITLE ===== -->
+    <h1 class="ifixit-title">
+        @category?.CategoryName
+    </h1>
+
+    <p class="ifixit-subtitle">
+        Linh kiện – dịch vụ sửa chữa – phụ kiện liên quan
+    </p>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning">
+            Chưa có sản phẩm trong danh mục này.
+        </div>
+    }
+    else
+    {
+        <!-- ===== PRODUCT GRID (IFIXIT STYLE) ===== -->
+        <div class="ifixit-product-grid">
+            @foreach (var p in Model)
+            {
+                var avgRating = p.Reviews.Any(r => r.Rating.HasValue)
+                ? p.Reviews.Where(r => r.Rating.HasValue).Average(r => r.Rating!.Value)
+                : 0;
+
+                var totalReviews = p.Reviews.Count(r => r.Rating.HasValue);
+
+                <a asp-controller="Product"
+                   asp-action="Details"
+                   asp-route-id="@p.ProductId"
+                   class="ifixit-product-card">
+
+                    <div class="ifixit-product-img">
+                        <img src="/images/products/@(p.MainImage ?? "no-image.jpg")"
+                             alt="@p.ProductName" />
+                    </div>
+
+                    <div class="ifixit-product-name">
+                        @p.ProductName
+                    </div>
+
+                    <!-- ⭐ RATING -->
+                    <div class="ifixit-product-rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(avgRating))
+                            {
+                                <i class="fa fa-star text-warning"></i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-star text-secondary opacity-25"></i>
+                            }
+                        }
+                        <span class="rating-count">(@totalReviews)</span>
+                    </div>
+
+                    <div class="ifixit-product-price">
+                        @p.Price.ToString("N0")đ
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>
+<style>
+    /* ===== PRODUCT GRID ===== */
+    .ifixit-product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 26px;
+    }
+
+    /* ===== PRODUCT CARD ===== */
+    .ifixit-product-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 18px 16px 20px;
+        border: 1px solid #e5e7eb;
+        text-decoration: none;
+        color: #111827;
+        transition: all .28s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .ifixit-product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0,0,0,.12);
+        }
+
+    /* ===== IMAGE ===== */
+    .ifixit-product-img img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: contain;
+        margin-bottom: 14px;
+    }
+
+    /* ===== NAME ===== */
+    .ifixit-product-name {
+        font-size: 15px;
+        font-weight: 700;
+        min-height: 42px;
+        margin-bottom: 8px;
+        line-height: 1.35;
+    }
+
+    /* ===== RATING ===== */
+    .ifixit-product-rating {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+        .ifixit-product-rating i {
+            margin-right: 1px;
+        }
+
+    .rating-count {
+        color: #6b7280;
+        margin-left: 4px;
+        font-size: 12px;
+    }
+
+    /* ===== PRICE ===== */
+    .ifixit-product-price {
+        color: #d70018;
+        font-size: 17px;
+        font-weight: 800;
+        margin-top: auto;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 768px) {
+        .ifixit-product-grid
+
+    {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: 18px;
+    }
+
+    }
+
+    .ifixit-breadcrumb a {
+        color: #d70018;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>

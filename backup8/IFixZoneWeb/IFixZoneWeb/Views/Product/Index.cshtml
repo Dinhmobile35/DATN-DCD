@@ -1,0 +1,372 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.Product>
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4 text-center fw-bold text-primary">
+        <i class="fa-solid fa-boxes-stacked me-2"></i> Danh sách sản phẩm
+    </h2>
+
+    <div class="row">
+
+        <!-- ================= PANEL FILTER ================= -->
+        <aside class="col-lg-3 mb-4">
+            <div class="filter-panel">
+                <h6 class="fw-bold mb-3">🔍 Bộ lọc</h6>
+
+                <!-- CATEGORY -->
+                <div class="filter-group">
+                    <div class="filter-title">Danh mục</div>
+                    <div class="filter-buttons" data-filter="category">
+                        <button class="filter-btn active" data-value="all">Tất cả</button>
+                        <button class="filter-btn" data-value="điện thoại">Điện thoại</button>
+                        <button class="filter-btn" data-value="laptop">Laptop</button>
+                        <button class="filter-btn" data-value="dụng cụ">Dụng cụ</button>
+                    </div>
+                </div>
+
+                <!-- PRICE -->
+                <div class="filter-group">
+                    <div class="filter-title">Giá</div>
+                    <div class="filter-buttons" data-filter="price">
+                        <button class="filter-btn active" data-value="all">Tất cả</button>
+                        <button class="filter-btn" data-value="0-500">Dưới 500k</button>
+                        <button class="filter-btn" data-value="500-1000">500k – 1tr</button>
+                        <button class="filter-btn" data-value="1000+">Trên 1tr</button>
+                    </div>
+                </div>
+
+                <!-- STOCK -->
+                <div class="filter-group">
+                    <div class="filter-title">Tình trạng</div>
+                    <div class="filter-buttons" data-filter="stock">
+                        <button class="filter-btn active" data-value="all">Tất cả</button>
+                        <button class="filter-btn" data-value="in">Còn hàng</button>
+                        <button class="filter-btn" data-value="out">Hết hàng</button>
+                    </div>
+                </div>
+
+                <!-- RATING -->
+                <div class="filter-group">
+                    <div class="filter-title">Đánh giá</div>
+                    <div class="filter-buttons" data-filter="rating">
+                        <button class="filter-btn active" data-value="all">Tất cả</button>
+                        <button class="filter-btn" data-value="4">⭐ 4+</button>
+                        <button class="filter-btn" data-value="3">⭐ 3+</button>
+                        <button class="filter-btn" data-value="2">⭐ 2+</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= PRODUCT LIST ================= -->
+        <section class="col-lg-9">
+
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fa-solid fa-inbox fa-4x text-muted mb-3"></i>
+                    <p class="fs-5 text-muted">Không có sản phẩm</p>
+                </div>
+            }
+            else
+            {
+                var products = Model
+                .OrderBy(p => p.Stock <= 0) // Hết hàng xuống cuối
+                .ThenByDescending(p => p.CreatedAt)
+                .ToList();
+
+                <div class="product-grid" id="productGrid">
+
+                    @foreach (var p in products)
+                    {
+                        double rating = (p.Reviews != null && p.Reviews.Any())
+                        ? (p.Reviews.Average(r => (double?)r.Rating) ?? 0)
+                        : 0;
+
+                        int fullStar = (int)Math.Floor(rating);
+
+                        <a class="ifix-card product-item @(p.Stock <= 0 ? "out" : "")"
+                           asp-controller="Product"
+                           asp-action="Details"
+                           asp-route-id="@p.ProductId"
+                           data-category="@p.Category?.CategoryName?.ToLower()"
+                           data-price="@p.Price"
+                           data-stock="@(p.Stock > 0 ? "in" : "out")"
+                           data-rating="@rating">
+
+                            <div class="image-wrapper">
+                                <img src="/images/products/@(p.MainImage ?? "no-image.jpg")"
+                                     class="product-thumb"
+                                     loading="lazy" />
+
+                                @if (p.Stock > 0)
+                                {
+                                    <span class="badge-stock in-stock">Còn hàng</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-stock out-stock">Hết hàng</span>
+                                }
+                            </div>
+
+                            <div class="card-content">
+                                <div class="rating">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= fullStar)
+                                        {
+                                            <i class="fa-solid fa-star"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa-regular fa-star"></i>
+                                        }
+                                    }
+                                    <span class="rating-count">(@rating.ToString("0.0"))</span>
+                                </div>
+
+                                <div class="product-name">@p.ProductName</div>
+                                <div class="price">@p.Price.ToString("N0") ₫</div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+<!-- ================= CSS ================= -->
+<style>
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(5,1fr);
+        gap: 16px;
+    }
+    @@media(max - width:1200px) {
+        .product-grid
+
+    {
+        grid-template-columns: repeat(4,1fr);
+    }
+
+    }
+    @@media(max - width:768px) {
+        .product-grid
+
+    {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    }
+
+    .filter-panel {
+        background: #fff;
+        border-radius: 14px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .filter-group {
+        margin-bottom: 14px;
+    }
+
+    .filter-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .filter-btn {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+        .filter-btn.active {
+            background: #fee2e2;
+            border-color: #d70018;
+            color: #d70018;
+            font-weight: 700;
+        }
+
+    .ifix-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        text-decoration: none;
+        color: #111;
+        transition: .25s;
+    }
+
+        .ifix-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 40px rgba(0,0,0,.12);
+        }
+
+        .ifix-card.out {
+            opacity: .55;
+        }
+
+            .ifix-card.out img {
+                filter: grayscale(1);
+            }
+
+    .image-wrapper {
+        position: relative;
+        background: #f8fafc;
+    }
+
+    .product-thumb {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: contain;
+        padding: 14px;
+    }
+
+    .badge-stock {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+    }
+
+    .in-stock {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .out-stock {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .card-content {
+        text-align: center;
+        padding: 14px;
+    }
+
+    .rating {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+        .rating i.fa-solid {
+            color: #facc15;
+        }
+
+        .rating i.fa-regular {
+            color: #d1d5db;
+        }
+
+    .rating-count {
+        font-size: 12px;
+        color: #6b7280;
+        margin-left: 4px;
+    }
+
+    .product-name {
+        font-size: 14px;
+        font-weight: 600;
+        min-height: 38px;
+    }
+
+    .price {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #d70018;
+    }
+</style>
+<!-- ================= JS FILTER ================= -->
+<script>
+    const state = {
+        category: "all",
+        price: "all",
+        stock: "all",
+        rating: "all"
+    };
+
+    const items = [...document.querySelectorAll(".product-item")];
+
+    /* ===== PRICE CHECK (FIX CHUẨN) ===== */
+    function matchPrice(price, range) {
+        if (isNaN(price)) return false;
+
+        switch (range) {
+            case "0-500":
+                return price < 500000;
+            case "500-1000":
+                return price >= 500000 && price <= 1000000;
+            case "1000+":
+                return price > 1000000;
+            default:
+                return true;
+        }
+    }
+
+    /* ===== APPLY FILTER ===== */
+    function applyFilter() {
+        items.forEach(item => {
+            let ok = true;
+
+            /* CATEGORY */
+            if (
+                state.category !== "all" &&
+                !item.dataset.category?.includes(state.category)
+            ) ok = false;
+
+            /* STOCK */
+            if (
+                state.stock !== "all" &&
+                item.dataset.stock !== state.stock
+            ) ok = false;
+
+            /* PRICE ⭐ FIXED */
+               /* PRICE */
+    const price = parseInt(item.dataset.price, 10);
+    if (state.price !== "all" && !matchPrice(price, state.price)) ok = false;
+
+
+            /* RATING */
+            const rating = Number(item.dataset.rating);
+            if (
+                state.rating !== "all" &&
+                rating < Number(state.rating)
+            ) ok = false;
+
+            item.style.display = ok ? "" : "none";
+        });
+    }
+
+    /* ===== FILTER BUTTON CLICK ===== */
+    document.querySelectorAll(".filter-buttons").forEach(group => {
+        const key = group.dataset.filter;
+
+        group.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.onclick = () => {
+                group.querySelectorAll(".filter-btn")
+                    .forEach(b => b.classList.remove("active"));
+
+                btn.classList.add("active");
+                state[key] = btn.dataset.value;
+
+                applyFilter();
+            };
+        });
+    });
+
+    /* INIT */
+    applyFilter();
+</script>

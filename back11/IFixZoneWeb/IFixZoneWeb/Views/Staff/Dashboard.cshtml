@@ -1,0 +1,118 @@
+﻿@{
+    Layout = "_StaffLayout";
+    ViewData["Title"] = "Dashboard Nhân viên";
+}
+
+
+<h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
+    <i class="fa-solid fa-user-gear text-primary"></i>
+    Dashboard Nhân viên
+</h3>
+
+<!-- ================= KPI ================= -->
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="kpi-card bg-primary">
+            <p>Tổng đơn</p>
+            <h2>@Model.totalOrders</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card bg-warning text-dark">
+            <p>Đơn mới</p>
+            <h2>@Model.newOrders</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card bg-info">
+            <p>Đang giao</p>
+            <h2>@Model.shippingOrders</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card bg-success">
+            <p>Hoàn thành</p>
+            <h2>@Model.completedOrders</h2>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= DOANH THU ================= -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+            <h6 class="text-muted mb-1">Tổng doanh thu (tham khảo)</h6>
+            <h3 class="fw-bold text-danger">
+                @String.Format("{0:N0} ₫", Model.revenue)
+            </h3>
+        </div>
+        <i class="fa-solid fa-sack-dollar fa-3x text-danger opacity-25"></i>
+    </div>
+</div>
+
+<!-- ================= ĐƠN GẦN NHẤT ================= -->
+<div class="card shadow-sm">
+    <div class="card-header fw-bold">
+        <i class="fa-solid fa-clock me-1"></i>
+        Đơn hàng gần nhất
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Ngày đặt</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model.latestOrders)
+                {
+                    <tr>
+                        <td class="fw-semibold">@o.OrderCode</td>
+                        <td>@o.User?.FullName</td>
+                        <td>
+                            <span class="badge bg-secondary">@o.Status</span>
+                        </td>
+                        <td class="text-end">
+                            @o.OrderDate?.ToString("dd/MM/yyyy HH:mm")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= STYLE ================= -->
+<style>
+    .kpi-card {
+        border-radius: 14px;
+        padding: 20px;
+        color: #fff;
+        box-shadow: 0 12px 28px rgba(0,0,0,.18);
+        transition: .25s;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .kpi-card p {
+            margin: 0;
+            font-weight: 600;
+            opacity: .85;
+        }
+
+        .kpi-card h2 {
+            font-weight: 800;
+            margin: 4px 0 0;
+        }
+</style>

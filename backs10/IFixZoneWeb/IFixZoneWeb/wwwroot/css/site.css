@@ -1,0 +1,467 @@
+﻿/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+:root {
+    --ifx-red: #d70018;
+    --ifx-red-dark: #b80014;
+    --ifx-red-soft: #fee2e2;
+    --ifx-white: #ffffff;
+    --ifx-text: #111827;
+    --ifx-muted: #6b7280;
+    --ifx-border: #e5e7eb;
+    --ifx-yellow: #facc15;
+    --ifx-bg: #f5f7fa;
+}
+
+/* =========================================================
+   RESET & BASE
+========================================================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--ifx-bg);
+    color: var(--ifx-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+/* ===============================
+   NOTIFICATION DROPDOWN – FIX UI
+   =============================== */
+
+/* Dropdown tổng */
+#notiWrapper .dropdown-menu {
+    width: 360px;
+    max-height: 420px;
+    padding: 0;
+    border-radius: 12px;
+    overflow: hidden; /* ❌ bỏ scroll ngang */
+}
+
+    /* Header */
+    #notiWrapper .dropdown-menu > .border-bottom,
+    #notiWrapper .dropdown-menu > .px-3 {
+        background: #f8f9fa;
+        font-size: 0.95rem;
+    }
+
+/* List */
+#notiList {
+    max-height: 320px;
+    overflow-y: auto;
+    overflow-x: hidden; /* ❌ KHÔNG scroll ngang */
+}
+
+    /* Item */
+    #notiList .dropdown-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px 14px;
+        white-space: normal; /* cho text xuống dòng */
+        border-bottom: 1px solid #f1f3f5;
+    }
+
+        /* Hover */
+        #notiList .dropdown-item:hover {
+            background: #f8f9fa;
+        }
+
+        /* Chưa đọc */
+        #notiList .dropdown-item.fw-semibold {
+            background: #eef5ff;
+        }
+
+        /* Nội dung */
+        #notiList .dropdown-item > div:first-child {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+    /* Thời gian */
+    #notiList small {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.75rem;
+        color: #868e96;
+    }
+
+    /* Nút ✓ */
+    #notiList form {
+        flex-shrink: 0;
+    }
+
+    #notiList button {
+        font-size: 0.85rem;
+        padding: 0 6px;
+    }
+
+/* Footer */
+#notiWrapper .dropdown-menu .dropdown-item.text-primary {
+    border-top: 1px solid #dee2e6;
+    background: #fff;
+}
+
+/* Badge */
+#notiBadge {
+    font-size: 0.7rem;
+    padding: 4px 6px;
+}
+
+/* =========================================================
+   HEADER - DESKTOP
+========================================================= */
+.ifx-navbar {
+    background: linear-gradient(90deg, var(--ifx-red), var(--ifx-red-dark));
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 9990;
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+
+    .ifx-navbar,
+    .ifx-navbar .container {
+        overflow: visible !important;
+    }
+
+.navbar-brand {
+    color: #fff !important;
+    font-weight: 800;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* LOGO */
+.ifx-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+@media (max-width:1200px) {
+    .ifx-logo {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* =========================================================
+   HEADER BUTTONS
+========================================================= */
+.ifx-category-btn,
+.ifx-action,
+.ifx-contact,
+.ifx-cart > span,
+.navbar .dropdown-toggle,
+.navbar a.text-white {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    color: #fff !important;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+
+    .ifx-category-btn i,
+    .ifx-action i,
+    .ifx-contact i,
+    .ifx-cart i,
+    .navbar .dropdown-toggle i {
+        font-size: 15px;
+        color: #fff;
+    }
+
+    .ifx-category-btn:hover,
+    .ifx-action:hover,
+    .ifx-contact:hover,
+    .ifx-cart > span:hover,
+    .navbar .dropdown-toggle:hover,
+    .navbar a.text-white:hover {
+        background: #fff;
+        color: var(--ifx-red) !important;
+        transform: translateY(-1px);
+    }
+
+        .ifx-category-btn:hover i,
+        .ifx-action:hover i,
+        .ifx-contact:hover i,
+        .ifx-cart:hover i,
+        .navbar .dropdown-toggle:hover i {
+            color: var(--ifx-red);
+        }
+
+/* =========================================================
+   SEARCH BAR + SUGGEST
+========================================================= */
+.ifx-search {
+    position: relative;
+    z-index: 9999;
+}
+
+    .ifx-search input {
+        width: 100%;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        padding: 0 42px 0 14px;
+        font-size: 14px;
+    }
+
+        .ifx-search input::placeholder {
+            color: var(--ifx-muted);
+        }
+
+        .ifx-search input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(215,0,24,.25);
+        }
+
+/* SEARCH SUGGEST */
+.search-suggest {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.25);
+    z-index: 99999;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.search-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+    .search-item img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+    }
+
+    .search-item:hover,
+    .search-item.active {
+        background: var(--ifx-red-soft);
+    }
+
+.search-highlight {
+    color: var(--ifx-red);
+    font-weight: 700;
+}
+
+/* =========================================================
+   CATEGORY MENU (CHA – CON – CHÁU)
+========================================================= */
+.ifx-category-root {
+    min-width: 260px;
+    padding: 8px 0;
+}
+
+.category-item,
+.dropdown-submenu {
+    position: relative;
+}
+
+    .dropdown-submenu > .submenu {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        display: none;
+        min-width: 260px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 14px 40px rgba(0,0,0,.25);
+    }
+
+    .dropdown-submenu:hover > .submenu {
+        display: block;
+    }
+
+.submenu .dropdown-item {
+    padding: 10px 16px;
+    font-size: 14px;
+}
+
+/* =========================================================
+   CART + MINI CART
+========================================================= */
+.ifx-cart {
+    position: relative;
+}
+
+.cart-text {
+    font-size: 14px;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 3px;
+    right: -6px;
+    background: #fff;
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mini-cart {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 130%;
+    width: 320px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    z-index: 9999;
+}
+
+    .mini-cart.show {
+        display: block;
+    }
+
+/* =========================================================
+   USER DROPDOWN
+========================================================= */
+.navbar .dropdown-menu {
+    border-radius: 14px;
+    border: none;
+    padding: 6px 0;
+    box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    min-width: 220px;
+}
+
+    .navbar .dropdown-menu .dropdown-item {
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+        .navbar .dropdown-menu .dropdown-item:hover {
+            background: var(--ifx-red-soft);
+            color: var(--ifx-red);
+        }
+
+/* =========================================================
+   MOBILE HEADER
+========================================================= */
+.ifx-mobile-header {
+    background: var(--ifx-red);
+    padding: 10px;
+}
+
+.mobile-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mobile-menu-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+}
+
+.mobile-logo {
+    color: #fff;
+    font-weight: 800;
+    font-size: 18px;
+}
+
+.mobile-cart {
+    color: #fff;
+    position: relative;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+.ifx-footer {
+    background: #111827;
+    color: #d1d5db;
+}
+
+.footer-title {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.footer-desc {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+
+    .footer-links a {
+        color: #d1d5db;
+    }
+
+        .footer-links a:hover {
+            color: var(--ifx-yellow);
+        }
+
+.pay-badge {
+    background: #1f2937;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.footer-line {
+    border-color: #374151;
+    margin: 24px 0;
+}
+
+.footer-copy {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 991px) {
+    .cart-text {
+        display: none;
+    }
+}

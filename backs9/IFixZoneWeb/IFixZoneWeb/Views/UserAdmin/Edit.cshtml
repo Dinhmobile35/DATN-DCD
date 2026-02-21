@@ -1,0 +1,39 @@
+﻿@model IFixZoneWeb.Models.Entities.User
+@{
+    Layout = "_AdminLayout";
+}
+
+<h4>@(Model.UserId == 0 ? "Thêm người dùng" : "Sửa người dùng")</h4>
+
+<form method="post">
+
+    <input type="hidden" asp-for="UserId" />
+
+    <div class="mb-2">
+        <label>Tên đăng nhập</label>
+        <input asp-for="Username" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Mật khẩu </label>
+        <input asp-for="PasswordHash" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Họ tên</label>
+        <input asp-for="FullName" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Mật khẩu mới (để trống nếu không đổi)</label>
+        <input type="password" name="newPassword" class="form-control" />
+    </div>
+
+    <button class="btn btn-success mt-2">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary mt-2">Hủy</a>
+
+</form>

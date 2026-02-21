@@ -1,0 +1,366 @@
+﻿@model IFixZoneWeb.Models.Entities.Order
+@{
+    Layout = "_AdminLayout";  // <-- QUAN TRỌNG: Dòng này phải có để dùng layout admin
+}
+@{
+    Layout = null;
+    var totalAmount = Model.TotalAmount ?? 0;
+    var totalQuantity = Model.OrderDetails.Sum(od => od.Quantity);
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Hóa đơn - #@Model.OrderCode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+            color: black;
+            font-size: 9pt;
+        }
+
+        /* Nút chức năng - to, căn phải */
+        .action-bar {
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 2px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            text-align: right;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .action-bar button {
+                margin-left: 10px;
+                padding: 8px 18px;
+                font-size: 16px;
+                font-weight: bold;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                min-width: 140px;
+            }
+
+        .print-btn {
+            background: #ee4d2d;
+            color: white;
+        }
+
+            .print-btn:hover {
+                background: #d63b1f;
+            }
+
+        .back-btn, .close-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+            .back-btn:hover, .close-btn:hover {
+                background: #545b62;
+            }
+
+        /* Hóa đơn in - chuẩn A6 */
+        .invoice-container {
+            width: 100%;
+            max-width: 360px; /* Giảm để an toàn cho A6 (105mm) */
+            margin: 15px auto;
+            background: white;
+            border: 3px solid #ee4d2d;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+            border-bottom: 3px solid #ee4d2d;
+            padding-bottom: 8px;
+        }
+
+            .header h1 {
+                color: #ee4d2d;
+                font-size: 20pt;
+                margin: 0;
+            }
+
+            .header h2 {
+                color: #ee4d2d;
+                font-size: 14pt;
+                margin: 4px 0 0;
+            }
+
+        .order-code {
+            text-align: center;
+            font-size: 11pt;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .barcode {
+            text-align: center;
+            margin: 12px 0;
+            font-family: 'Libre Barcode 39', monospace;
+            font-size: 36pt; /* Giảm để không tràn */
+            letter-spacing: 5px;
+            background: black;
+            color: white;
+            padding: 6px 15px;
+            display: inline-block;
+            border-radius: 6px;
+            max-width: 100%;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0;
+            border: 2px dashed #000;
+            padding: 8px;
+            font-size: 8.5pt;
+        }
+
+        .info-box {
+            width: 48%;
+        }
+
+            .info-box strong {
+                font-weight: bold;
+            }
+
+        .large-codes {
+            text-align: center;
+            margin: 12px 0;
+            font-size: 20pt;
+            font-weight: bold;
+        }
+
+        .qr-section {
+            text-align: center;
+            margin: 12px 0;
+        }
+
+        .qr-code {
+            width: 90px;
+            height: 90px;
+            background: #ddd;
+            border: 2px solid #000;
+            margin: 0 auto 6px;
+        }
+
+        .product-list strong {
+            font-size: 9pt;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 8pt;
+        }
+
+            table th, table td {
+                border: 1px solid #000;
+                padding: 5px;
+            }
+
+            table th {
+                background: #f0f0f0;
+                font-weight: bold;
+            }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .total-amount {
+            font-size: 18pt;
+            font-weight: bold;
+            text-align: right;
+            margin: 15px 0;
+            color: #ee4d2d;
+        }
+
+        .note {
+            margin: 15px 0;
+            padding: 8px;
+            border: 2px dashed #000;
+            text-align: center;
+            font-size: 8.5pt;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 8pt;
+            color: #555;
+        }
+
+        /* In ấn - chuẩn A6, 1 trang */
+        @@media print {
+            @@page {
+                size: A6 portrait;
+                margin: 4mm;
+            }
+
+            body {
+                background: white !important;
+                padding: 0;
+                font-size: 8.5pt;
+            }
+
+            .action-bar {
+                display: none !important;
+            }
+
+            .invoice-container {
+                border: 3px solid #ee4d2d;
+                box-shadow: none;
+                padding: 8px;
+                margin: 0;
+                max-width: none;
+                width: 100%;
+            }
+
+            .barcode {
+                font-size: 32pt;
+                padding: 5px 10px;
+                letter-spacing: 4px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .large-codes {
+                font-size: 18pt;
+            }
+
+            .qr-code {
+                width: 80px;
+                height: 80px;
+            }
+
+            table {
+                font-size: 7.5pt;
+            }
+
+            .total-amount {
+                font-size: 16pt;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Nút chức năng -->
+    <div class="action-bar no-print">
+        <button class="print-btn" onclick="window.print()">
+            <i class="fa-solid fa-print fa-lg me-2"></i>In hóa đơn
+        </button>
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left fa-lg me-2"></i>Quay lại
+        </button>
+        <button class="close-btn" onclick="window.close()">
+            <i class="fa-solid fa-times fa-lg me-2"></i>Đóng tab
+        </button>
+    </div>
+
+    <!-- Hóa đơn in -->
+    <div class="invoice-container">
+        <div class="header">
+            <h1>iFixZone</h1>
+            <h2>Express</h2>
+        </div>
+
+        <div class="order-code">
+            Mã vận đơn: #@Model.OrderCode<br>
+            Mã đơn hàng: #@Model.OrderCode
+        </div>
+
+        <div class="barcode">
+            *@Model.OrderCode*
+        </div>
+
+        <div class="info-row">
+            <div class="info-box">
+                <strong>Từ:</strong><br>
+                iFixZone Store<br>
+                123 Đường ABC, Quận 1, TP.HCM<br>
+                ĐT: 0909 999 999
+            </div>
+            <div class="info-box text-right">
+                <strong>Đến (Giao hàng):</strong><br>
+                @Model.RecipientName<br>
+                @Model.RecipientPhone<br>
+                @Model.RecipientAddress
+            </div>
+        </div>
+
+        <div class="large-codes">
+            MB-17-05-HH01
+            <div style="font-size: 18pt; margin-top: 4px;">NSTT-01</div>
+        </div>
+
+        <div class="qr-section">
+            <div class="qr-code"></div>
+            <p class="fw-bold mt-1">Mã đơn hàng: #@Model.OrderCode</p>
+            <p>Ngày đặt: @(Model.OrderDate?.ToString("dd-MM-yyyy HH:mm"))</p>
+        </div>
+
+        <div class="product-list">
+            <strong>Nội dung hàng (Tổng SL: @totalQuantity)</strong>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th class="text-center">SL</th>
+                        <th class="text-right">Đơn giá</th>
+                        <th class="text-right">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@item.Product?.ProductName</td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-right">@item.UnitPrice.ToString("N0") ₫</td>
+                            <td class="text-right">@((item.Quantity * item.UnitPrice).ToString("N0")) ₫</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right fw-bold">TỔNG CỘNG:</td>
+                        <td class="text-right fw-bold text-danger">@(totalAmount.ToString("N0")) ₫</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="note">
+            <p class="mb-2"><strong>Người gửi phải cam kết hàng hóa đúng tải trọng, đúng số lượng, đúng chất lượng.</strong></p>
+            <p class="mb-2">Tiền thu Người nhận: ______________________________</p>
+            <p class="mb-0 fw-bold">Chỉ dùng để giao hàng. Được đóng kiểm.</p>
+        </div>
+
+        <div class="footer-note">
+            <p>Chuyển hoàn sau 3 lần phát. Lưu kho tối đa 5 ngày.</p>
+            <p>Cảm ơn quý khách đã mua sắm tại iFixZone!</p>
+        </div>
+    </div>
+</body>
+</html>

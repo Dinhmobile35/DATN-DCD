@@ -1,0 +1,222 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
+    <i class="fa-solid fa-gauge-high text-primary"></i>
+    Bảng điều khiển hệ thống
+</h3>
+
+<!-- ================= KPI CARDS ================= -->
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="kpi-card kpi-primary">
+            <div>
+                <p>Người dùng</p>
+                <h2>@Model.totalUsers</h2>
+            </div>
+            <i class="fa-solid fa-users"></i>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card kpi-success">
+            <div>
+                <p>Sản phẩm</p>
+                <h2>@Model.totalProducts</h2>
+            </div>
+            <i class="fa-solid fa-box"></i>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card kpi-warning">
+            <div>
+                <p>Đơn hàng</p>
+                <h2>@Model.totalOrders</h2>
+            </div>
+            <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card kpi-danger">
+            <div>
+                <p>Doanh thu</p>
+                <h2>@String.Format("{0:N0} đ", Model.totalRevenue)</h2>
+            </div>
+            <i class="fa-solid fa-sack-dollar"></i>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= CHARTS ================= -->
+<div class="row g-4 mb-4">
+
+    <!-- Revenue -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold">
+                <i class="fa-solid fa-chart-line me-1"></i>
+                Doanh thu 7 ngày gần nhất
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Status -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold">
+                <i class="fa-solid fa-chart-pie me-1"></i>
+                Trạng thái đơn hàng
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= TOP PRODUCTS ================= -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-bold">
+        <i class="fa-solid fa-fire me-1"></i>
+        Top sản phẩm bán chạy
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th class="text-end">Số lượng bán</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.TopProducts)
+                {
+                    <tr>
+                        <td>@p.Product</td>
+                        <td class="text-end fw-bold text-danger">@p.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= HƯỚNG DẪN ================= -->
+<div class="card shadow-sm">
+    <div class="card-header fw-bold">
+        <i class="fa-solid fa-circle-info"></i>
+        Ghi chú quản trị
+    </div>
+    <div class="card-body text-muted">
+        <ul>
+            <li>Doanh thu chỉ tính đơn <b>Hoàn thành</b></li>
+            <li>Biểu đồ cập nhật theo dữ liệu thực tế</li>
+            <li>Phân quyền nằm trong mục <b>Quản lý quyền</b></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ================= STYLES ================= -->
+<style>
+    .kpi-card {
+        border-radius: 16px;
+        padding: 20px;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 12px 30px rgba(0,0,0,.12);
+        transition: .25s;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .kpi-card h2 {
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .kpi-card p {
+            margin: 0;
+            opacity: .85;
+            font-weight: 500;
+        }
+
+        .kpi-card i {
+            font-size: 36px;
+            opacity: .35;
+        }
+
+    .kpi-primary {
+        background: linear-gradient(135deg,#2563eb,#1e40af);
+    }
+
+    .kpi-success {
+        background: linear-gradient(135deg,#16a34a,#166534);
+    }
+
+    .kpi-warning {
+        background: linear-gradient(135deg,#f59e0b,#b45309);
+    }
+
+    .kpi-danger {
+        background: linear-gradient(135deg,#dc2626,#991b1b);
+    }
+</style>
+
+<!-- ================= SCRIPTS ================= -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Revenue Line Chart
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueLabels)),
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueData)),
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.15)',
+                    fill: true,
+                    tension: .4
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { ticks: { callback: v => v.toLocaleString() + ' đ' } } }
+            }
+        });
+
+        // Status Pie Chart
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StatusLabels)),
+                datasets: [{
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StatusData)),
+                    backgroundColor: [
+                        '#3b82f6','#22c55e','#f59e0b','#ef4444','#6366f1'
+                    ]
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,191 @@
+﻿@model IFixZoneWeb.Models.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+
+        <h3 class="text-center mb-4 fw-bold text-success">
+            <i class="fa-solid fa-user-plus me-2"></i> Đăng ký iFixZone
+        </h3>
+
+        <!-- ERROR -->
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa-solid fa-circle-exclamation me-1"></i>
+                @ViewBag.Error
+            </div>
+        }
+
+        <!-- SUCCESS -->
+        @if (TempData["RegisterSuccess"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fa-solid fa-circle-check me-1"></i>
+                @TempData["RegisterSuccess"]
+            </div>
+        }
+
+        <form asp-action="Register"
+              method="post"
+              class="card p-4 shadow-sm rounded-4 needs-validation"
+              novalidate>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- FULL NAME -->
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label fw-semibold">
+                    <i class="fa-solid fa-id-card me-1"></i> Họ tên
+                </label>
+                <input asp-for="FullName"
+                       class="form-control"
+                       required />
+                <div class="invalid-feedback">
+                    Vui lòng nhập họ tên
+                </div>
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+
+            <!-- USERNAME -->
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label fw-semibold">
+                    <i class="fa-solid fa-user me-1"></i> Tên đăng nhập
+                </label>
+                <input asp-for="Username"
+                       class="form-control"
+                       minlength="4"
+                       required />
+                <div class="invalid-feedback">
+                    Tên đăng nhập ít nhất 4 ký tự
+                </div>
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-semibold">
+                    <i class="fa-solid fa-envelope me-1"></i> Email
+                </label>
+                <input asp-for="Email"
+                       type="email"
+                       class="form-control"
+                       required />
+                <div class="invalid-feedback">
+                    Vui lòng nhập email hợp lệ
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label fw-semibold">
+                    <i class="fa-solid fa-lock me-1"></i> Mật khẩu
+                </label>
+
+                <div class="input-group password-wrapper">
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           id="passwordInput"
+                           minlength="6"
+                           required />
+
+                    <span class="input-group-text toggle-password"
+                          onclick="togglePassword()">
+                        <i class="fa-solid fa-eye" id="toggleIcon"></i>
+                    </span>
+                </div>
+
+                <div class="invalid-feedback">
+                    Mật khẩu ít nhất 6 ký tự
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <!-- SUBMIT -->
+            <button type="submit"
+                    class="btn btn-success w-100 fw-bold py-2">
+                <i class="fa-solid fa-user-plus me-1"></i> Đăng ký ngay
+            </button>
+
+            <p class="text-center mt-3 mb-0">
+                Đã có tài khoản?
+                <a asp-controller="Account"
+                   asp-action="Login"
+                   class="fw-bold text-success text-decoration-none">
+                    Đăng nhập ngay
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // ===== TOGGLE PASSWORD =====
+        function togglePassword() {
+            const input = document.getElementById("passwordInput");
+            const icon = document.getElementById("toggleIcon");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+
+        // ===== BOOTSTRAP VALIDATION =====
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation');
+
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+
+                    // reset password về dạng ẩn
+                    const input = document.getElementById("passwordInput");
+                    const icon = document.getElementById("toggleIcon");
+                    if (input && input.type === "text") {
+                        input.type = "password";
+                        icon.classList.replace("fa-eye-slash", "fa-eye");
+                    }
+                }, false);
+            });
+        })();
+    </script>
+}
+
+<style>
+    /* ===== PASSWORD TOGGLE ===== */
+    .password-wrapper .form-control {
+        border-right: none;
+    }
+
+    .password-wrapper .input-group-text {
+        background: #fff;
+        cursor: pointer;
+        border-left: none;
+    }
+
+    .toggle-password i {
+        color: #6b7280;
+    }
+
+    .toggle-password:hover i {
+        color: #16a34a; /* xanh cho register */
+    }
+</style>

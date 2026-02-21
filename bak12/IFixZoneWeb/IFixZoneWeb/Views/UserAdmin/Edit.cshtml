@@ -1,0 +1,138 @@
+﻿@model IFixZoneWeb.Models.Entities.User
+@{
+    Layout = "_AdminLayout";
+    bool isEdit = Model.UserId != 0;
+}
+
+<h4 class="fw-bold mb-4">
+    @(isEdit ? "Cập nhật người dùng" : "Thêm người dùng")
+</h4>
+
+<div class="user-form-wrapper">
+    <form method="post" class="user-form">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="UserId" />
+
+        <!-- USERNAME -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Tên đăng nhập</label>
+
+            @if (isEdit)
+            {
+                <input asp-for="Username"
+                       class="form-control"
+                       readonly />
+                <small class="text-muted">
+                    Tên đăng nhập không thể thay đổi
+                </small>
+            }
+            else
+            {
+                <input asp-for="Username"
+                       class="form-control" />
+            }
+        </div>
+
+        <!-- FULL NAME -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Họ tên</label>
+            <input asp-for="FullName" class="form-control" />
+        </div>
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Email</label>
+            <input asp-for="Email" type="email" class="form-control" />
+        </div>
+
+        <!-- PHONE -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Số điện thoại</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Địa chỉ</label>
+            <input asp-for="Address" class="form-control" />
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold">
+                @(isEdit ? "Mật khẩu mới" : "Mật khẩu")
+            </label>
+            <input type="password"
+                   name="newPassword"
+                   class="form-control"
+                   placeholder="@(isEdit ? "Để trống nếu không đổi" : "Nhập mật khẩu")" />
+        </div>
+
+        <!-- STATUS -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Trạng thái</label>
+            <select asp-for="IsActive" class="form-select">
+                <option value="true">Hoạt động</option>
+                <option value="false">Bị khóa</option>
+            </select>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success px-4">
+                <i class="fa fa-save me-1"></i> Lưu
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary px-4">
+                Hủy
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* ===== USER FORM ADMIN (BUILD SAFE) ===== */
+    .user-form-wrapper {
+        max-width: 720px;
+        background: #fff;
+        padding: 24px 28px;
+        border-radius: 14px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    }
+
+    .user-form .form-label {
+        font-size: 14px;
+        color: #111827;
+    }
+
+    .user-form .form-control,
+    .user-form .form-select {
+        border-radius: 10px;
+        padding: 10px 14px;
+        border: 1px solid #d1d5db;
+        font-size: 14px;
+        transition: all .2s ease;
+    }
+
+        .user-form .form-control:focus,
+        .user-form .form-select:focus {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 .15rem rgba(22,163,74,.25);
+        }
+
+    .user-form small {
+        font-size: 12px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+        .form-actions .btn {
+            border-radius: 10px;
+            font-weight: 600;
+        }
+</style>

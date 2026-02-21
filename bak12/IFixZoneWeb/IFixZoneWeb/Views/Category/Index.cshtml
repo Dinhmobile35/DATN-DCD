@@ -1,0 +1,214 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Category>
+
+@{
+    var current = ViewBag.CurrentCategory as IFixZoneWeb.Models.Entities.Category;
+    ViewData["Title"] = current?.CategoryName ?? "Danh mục";
+}
+
+<div class="ifixit-wrapper">
+
+    <!-- ===== BREADCRUMB ===== -->
+    @{
+        var breadcrumb = ViewBag.Breadcrumb as List<IFixZoneWeb.Models.Entities.Category> ?? new();
+    }
+
+    <nav class="ifixit-breadcrumb mb-4">
+        <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+
+        @foreach (var bc in breadcrumb)
+        {
+            <span>/</span>
+            <a asp-controller="Category"
+               asp-action="Index"
+               asp-route-id="@bc.CategoryId">
+                @bc.CategoryName
+            </a>
+        }
+    </nav>
+
+
+    <!-- ===== TITLE ===== -->
+    <h1 class="ifixit-title">
+        @current?.CategoryName
+    </h1>
+
+    <p class="ifixit-subtitle">
+        Chọn thiết bị / danh mục để xem linh kiện & dịch vụ sửa chữa
+    </p>
+
+    <!-- ===== GRID DANH MỤC CON ===== -->
+    <div class="ifixit-grid">
+        @foreach (var c in Model)
+        {
+            <a asp-controller="Category"
+               asp-action="Index"
+               asp-route-id="@c.CategoryId"
+               class="ifixit-card">
+
+                <div class="ifixit-card-icon">
+                    <i class="fa fa-mobile-screen-button"></i>
+                </div>
+
+                <div class="ifixit-card-name">
+                    @c.CategoryName
+                </div>
+
+                <div class="ifixit-card-action">
+                    Xem tiếp <i class="fa fa-arrow-right"></i>
+                </div>
+            </a>
+        }
+    </div>
+</div>
+<style>
+    /* ================= IFIXIT LAYOUT ================= */
+    .ifixit-wrapper {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 32px 16px 80px;
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .ifixit-breadcrumb {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 14px;
+    }
+
+        .ifixit-breadcrumb a {
+            color: #d70018;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .ifixit-breadcrumb span {
+            margin: 0 6px;
+        }
+
+    /* ===== TITLE ===== */
+    .ifixit-title {
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+
+    .ifixit-subtitle {
+        font-size: 16px;
+        color: #6b7280;
+        margin-bottom: 36px;
+    }
+
+    /* ================= GRID ================= */
+    .ifixit-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 28px;
+    }
+
+    /* ================= CARD ================= */
+    .ifixit-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 28px 20px 26px;
+        border: 1px solid #e5e7eb;
+        text-decoration: none;
+        color: #111827;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        transition: all .28s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        /* hover nền nhẹ giống ifixit */
+        .ifixit-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: #f9fafb;
+            opacity: 0;
+            transition: .28s;
+        }
+
+        .ifixit-card:hover::before {
+            opacity: 1;
+        }
+
+        .ifixit-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0,0,0,.12);
+        }
+
+    /* ================= ICON ================= */
+    .ifixit-card-icon {
+        width: 96px;
+        height: 96px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+
+        .ifixit-card-icon i {
+            font-size: 40px;
+            color: #2563eb;
+        }
+
+    /* ================= TEXT ================= */
+    .ifixit-card-name {
+        font-size: 17px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 1.35;
+        z-index: 1;
+    }
+
+    /* ================= ACTION ================= */
+    .ifixit-card-action {
+        font-size: 14px;
+        font-weight: 600;
+        color: #d70018;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 1;
+    }
+
+        .ifixit-card-action i {
+            font-size: 13px;
+            transition: transform .25s;
+        }
+
+    .ifixit-card:hover .ifixit-card-action i {
+        transform: translateX(4px);
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @@media (max-width: 768px) {
+        .ifixit-title
+
+    {
+        font-size: 26px;
+    }
+
+    .ifixit-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 18px;
+    }
+
+    .ifixit-card-icon {
+        width: 72px;
+        height: 72px;
+    }
+
+        .ifixit-card-icon i {
+            font-size: 30px;
+        }
+
+    }
+</style>

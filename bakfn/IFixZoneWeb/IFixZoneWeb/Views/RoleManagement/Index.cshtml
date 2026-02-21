@@ -1,0 +1,186 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.User>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý phân quyền";
+}
+
+<h4 class="fw-bold mb-3">
+    <i class="fa-solid fa-users-gear"></i> Quản lý vai trò
+</h4>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Tài khoản</th>
+            <th>Họ tên</th>
+            <th>Quyền</th>
+            <th width="120"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Username</td>
+                <td>@u.FullName</td>
+                <td>
+                    @if (!u.Roles.Any())
+                    {
+                        <span class="badge bg-secondary">Chưa gán</span>
+                    }
+                    else
+                    {
+                        foreach (var r in u.Roles)
+                        {
+                            <span class="badge bg-primary me-1">@r.RoleName</span>
+                        }
+                    }
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-sm btn-warning"
+                       asp-action="Assign"
+                       asp-route-id="@u.UserId">
+                        Phân quyền
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<style>
+    /* ===============================
+       ADMIN – ROLE MANAGEMENT PAGE
+       =============================== */
+
+    /* ===== PAGE TITLE ===== */
+    h4.fw-bold {
+        font-size: 20px;
+        font-weight: 800;
+        color: #111827;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        h4.fw-bold i {
+            color: #2563eb;
+            font-size: 18px;
+        }
+
+    /* ===== TABLE WRAPPER ===== */
+    .table {
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+        /* ===== TABLE HEADER ===== */
+        .table thead {
+            background: #f9fafb;
+        }
+
+            .table thead th {
+                font-size: 13px;
+                font-weight: 700;
+                text-transform: uppercase;
+                color: #374151;
+                padding: 12px;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+        /* ===== TABLE BODY ===== */
+        .table tbody td {
+            padding: 12px;
+            font-size: 14px;
+            color: #111827;
+            vertical-align: middle;
+        }
+
+    /* ===== ROW HOVER ===== */
+    .table-hover tbody tr {
+        transition: background 0.2s ease;
+    }
+
+        .table-hover tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+    /* ===== ROLE BADGES ===== */
+    .table .badge {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 10px;
+        border-radius: 999px;
+    }
+
+    .badge.bg-primary {
+        background: #2563eb !important;
+    }
+
+    .badge.bg-secondary {
+        background: #9ca3af !important;
+    }
+
+    /* ===== ACTION BUTTON ===== */
+    .table .btn-warning {
+        background: #f59e0b;
+        border: none;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+    }
+
+        .table .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+        }
+
+    /* ===== CENTER ACTION COLUMN ===== */
+    .table td.text-center {
+        white-space: nowrap;
+    }
+
+    /* ===============================
+       RESPONSIVE
+       =============================== */
+    @@media (max-width: 768px) {
+        h4 .fw-bold
+
+    {
+        font-size: 18px;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table tbody tr {
+        display: block;
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 10px;
+    }
+
+    .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        border: none;
+        font-size: 13px;
+    }
+
+        .table tbody td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+    }
+</style>

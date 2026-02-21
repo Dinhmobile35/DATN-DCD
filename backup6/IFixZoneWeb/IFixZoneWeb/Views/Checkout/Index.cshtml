@@ -1,0 +1,408 @@
+﻿@model IFixZoneWeb.Models.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+
+    var items = Model.Cart.CartItems
+        .Where(x => Model.SelectedCartItemIds.Contains(x.CartItemId))
+        .ToList();
+
+    var total = items.Sum(x => x.Quantity * x.Product.Price);
+}
+
+<form asp-action="Process" method="post" id="checkoutForm">
+    @foreach (var id in Model.SelectedCartItemIds)
+    {
+        <input type="hidden" name="SelectedCartItemIds" value="@id" />
+    }
+
+    <div class="checkout-wrapper">
+        <div class="checkout-container">
+
+            <!-- LEFT -->
+            <div class="checkout-left">
+                <h3 class="checkout-title">
+                    <i class="fa-solid fa-truck-fast"></i> Thông tin giao hàng
+                </h3>
+
+                <div class="form-group">
+                    <label>Họ tên người nhận</label>
+                    <input asp-for="RecipientName" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input asp-for="RecipientPhone" required />
+                </div>
+
+                <h4 class="section-title">Địa chỉ nhận hàng</h4>
+
+                <div class="form-row">
+                    <select id="province" required>
+                        <option value="">Tỉnh / Thành phố</option>
+                    </select>
+
+                    <select id="district" required disabled>
+                        <option value="">Quận / Huyện</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <select id="ward" required disabled>
+                        <option value="">Phường / Xã</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <input id="street" placeholder="Số nhà, tên đường"
+                           list="streetSuggest"
+                           value="@Model.RecipientAddress" />
+                    <datalist id="streetSuggest"></datalist>
+                </div>
+
+                <input type="hidden" asp-for="RecipientAddress" id="fullAddress" />
+
+                <button class="btn-submit">
+                    <i class="fa-solid fa-check"></i> Xác nhận đặt hàng
+                </button>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="checkout-right">
+                <h4 class="summary-title">Tóm tắt đơn hàng</h4>
+
+                @foreach (var i in items)
+                {
+                    <div class="summary-item">
+                        <img src="~/images/products/@i.Product.MainImage" />
+                        <div class="info">
+                            <div class="name">@i.Product.ProductName</div>
+                            <div class="qty">x @i.Quantity</div>
+                        </div>
+                        <div class="price">
+                            @((i.Quantity * i.Product.Price).ToString("N0")) ₫
+                        </div>
+                    </div>
+                }
+
+                <!-- TỔNG TIỀN -->
+                <div class="summary-total">
+                    <span>Tổng cộng</span>
+                    <span class="total">@total.ToString("N0") ₫</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<script>
+    const province = document.getElementById("province");
+    const district = document.getElementById("district");
+    const ward = document.getElementById("ward");
+    const street = document.getElementById("street");
+    const fullAddress = document.getElementById("fullAddress");
+    const form = document.getElementById("checkoutForm");
+
+    let addressData = [];
+
+    // ⚠️ CHỐNG HTML ENCODE
+    const savedAddress = @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(Model.RecipientAddress)
+        );
+
+    fetch("/data/vietnam-address.json")
+        .then(r => r.json())
+        .then(data => {
+            addressData = data;
+
+            data.forEach(p => {
+                province.insertAdjacentHTML(
+                    "beforeend",
+                    `<option value="${p.Name}">${p.Name}</option>`
+                );
+            });
+
+            prefillAddress();
+        });
+
+    province.addEventListener("change", () => {
+        district.disabled = false;
+        ward.disabled = true;
+
+        district.innerHTML = '<option value="" disabled selected>Quận / Huyện</option>';
+        ward.innerHTML = '<option value="" disabled selected>Phường / Xã</option>';
+
+        const p = addressData.find(x => x.Name === province.value);
+        p?.Districts.forEach(d =>
+            district.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${d.Name}">${d.Name}</option>`
+            )
+        );
+    });
+
+    district.addEventListener("change", () => {
+        ward.disabled = false;
+        ward.innerHTML = '<option value="" disabled selected>Phường / Xã</option>';
+
+        const p = addressData.find(x => x.Name === province.value);
+        const d = p?.Districts.find(x => x.Name === district.value);
+        d?.Wards.forEach(w =>
+            ward.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${w.Name}">${w.Name}</option>`
+            )
+        );
+    });
+
+    // 🔁 LOAD SẴN ĐỊA CHỈ USER
+    function prefillAddress() {
+        if (!savedAddress) return;
+
+        const parts = savedAddress.split(",").map(x => x.trim());
+        if (parts.length < 4) return;
+
+        street.value = parts[0];
+
+        province.value = parts[3];
+        province.dispatchEvent(new Event("change"));
+
+        setTimeout(() => {
+            district.value = parts[2];
+            district.dispatchEvent(new Event("change"));
+
+            setTimeout(() => {
+                ward.value = parts[1];
+            }, 200);
+        }, 200);
+    }
+
+    // ✅ GHÉP ĐỊA CHỈ TRƯỚC KHI SUBMIT
+    form.addEventListener("submit", e => {
+        if (!province.value || !district.value || !ward.value || !street.value) {
+            alert("Vui lòng nhập đầy đủ địa chỉ nhận hàng");
+            e.preventDefault();
+            return;
+        }
+
+        fullAddress.value =
+            `${street.value}, ${ward.value}, ${district.value}, ${province.value}`;
+    });
+</script>
+
+<style>
+    /* ===== WRAPPER ===== */
+    .checkout-wrapper {
+        background: #f5f6f8;
+        padding: 40px 0;
+    }
+
+    /* ===== LAYOUT ===== */
+    .checkout-container {
+        max-width: 1100px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1.2fr .8fr;
+        gap: 32px;
+    }
+
+    /* ===== LEFT BOX ===== */
+    .checkout-left {
+        background: #fff;
+        border-radius: 18px;
+        padding: 32px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    /* ===== TITLE ===== */
+    .checkout-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #d70018;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* ===== FORM ===== */
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            background: #fff;
+        }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: #d70018;
+                box-shadow: 0 0 0 2px rgba(215,0,24,.1);
+            }
+
+    /* ===== ADDRESS ===== */
+    .section-title {
+        margin: 26px 0 14px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #111;
+    }
+
+    /* 2 cột tỉnh / quận */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+        /* select */
+        .form-row select {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            background: #fff;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23999' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px;
+        }
+
+            .form-row select:disabled {
+                background-color: #f3f4f6;
+                cursor: not-allowed;
+            }
+
+            .form-row select:focus {
+                outline: none;
+                border-color: #d70018;
+                box-shadow: 0 0 0 2px rgba(215,0,24,.1);
+            }
+
+    /* ===== STREET ===== */
+    #street {
+        height: 48px;
+        margin-top: 4px;
+    }
+
+    /* ===== SUBMIT ===== */
+    .btn-submit {
+        margin-top: 26px;
+        width: 100%;
+        background: #d70018;
+        color: #fff;
+        border: none;
+        padding: 16px;
+        font-size: 17px;
+        font-weight: 700;
+        border-radius: 14px;
+        cursor: pointer;
+    }
+
+        .btn-submit:hover {
+            background: #b80014;
+        }
+
+    /* ===== RIGHT BOX ===== */
+    .checkout-right {
+        background: #fff;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        position: sticky;
+        top: 20px;
+    }
+
+    .summary-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    /* ===== ITEMS ===== */
+    .summary-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+        .summary-item img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+
+        .summary-item .info {
+            flex: 1;
+        }
+
+        .summary-item .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .summary-item .qty {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .summary-item .price {
+            font-weight: 700;
+            color: #d70018;
+        }
+
+    /* ===== MOBILE ===== */
+    @@media (max-width: 768px) {
+        .checkout-container
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-right {
+        position: static;
+        margin-top: 24px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #eee;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+        .summary-total .total {
+            color: #d70018;
+        }
+
+</style>

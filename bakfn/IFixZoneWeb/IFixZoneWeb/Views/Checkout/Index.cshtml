@@ -1,0 +1,613 @@
+﻿@model IFixZoneWeb.Models.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+
+    bool isBuyNow = Model.IsBuyNow;
+
+    var cartItems = !isBuyNow
+        ? Model.Cart.CartItems
+            .Where(x => Model.SelectedCartItemIds.Contains(x.CartItemId))
+            .ToList()
+        : new List<IFixZoneWeb.Models.Entities.CartItem>();
+
+    decimal total = isBuyNow
+        ? Model.BuyNowTotal
+        : cartItems.Sum(x => x.Quantity * x.Product.Price);
+}
+
+<!-- ================= ALERT MESSAGE ================= -->
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-error" id="alertBox">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        @TempData["Error"]
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success" id="alertBox">
+        <i class="fa-solid fa-circle-check"></i>
+        @TempData["Success"]
+    </div>
+}
+
+<form asp-action="Process" method="post" id="checkoutForm">
+
+    <!-- ===== PHÂN BIỆT BUY NOW / CART ===== -->
+    <input type="hidden" asp-for="IsBuyNow" />
+
+    @if (!isBuyNow)
+    {
+        foreach (var id in Model.SelectedCartItemIds)
+        {
+            <input type="hidden" name="SelectedCartItemIds" value="@id" />
+        }
+    }
+    else
+    {
+        <input type="hidden" asp-for="BuyNowProduct!.ProductId" />
+        <input type="hidden" asp-for="BuyNowQuantity" />
+        <input type="hidden" asp-for="BuyNowTotal" />
+    }
+
+    <div class="checkout-wrapper">
+        <div class="checkout-container">
+
+            <!-- ================= LEFT ================= -->
+            <div class="checkout-left">
+                <h3 class="checkout-title">
+                    <i class="fa-solid fa-truck-fast"></i> Thông tin giao hàng
+                </h3>
+
+                <div class="form-group">
+                    <label>Họ tên người nhận</label>
+                    <input asp-for="RecipientName" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input asp-for="RecipientPhone" required />
+                </div>
+
+                <h4 class="section-title">Địa chỉ nhận hàng</h4>
+
+                <div class="form-row">
+                    <select id="province" required>
+                        <option value="">Tỉnh / Thành phố</option>
+                    </select>
+                    <select id="district" required disabled>
+                        <option value="">Quận / Huyện</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <select id="ward" required disabled>
+                        <option value="">Phường / Xã</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <input id="street" placeholder="Số nhà, tên đường"
+                           value="@Model.RecipientAddress" />
+                </div>
+
+                <input type="hidden" asp-for="RecipientAddress" id="fullAddress" />
+                <h4 class="section-title">Phương thức thanh toán</h4>
+
+                <div class="payment-methods">
+                    <label class="payment-item">
+                        <input type="radio" name="PaymentMethod" value="COD" checked />
+                        <span>Thanh toán khi nhận hàng (COD)</span>
+                    </label>
+
+                    <label class="payment-item">
+                        <input type="radio" name="PaymentMethod" value="VietQR" />
+                        <span>Thanh toán bằng VietQR</span>
+                    </label>
+                </div>
+
+                <button class="btn-submit">
+                    <i class="fa-solid fa-check"></i> Xác nhận đặt hàng
+                </button>
+            </div>
+
+            <!-- ================= RIGHT ================= -->
+            <div class="checkout-right">
+                <h4 class="summary-title">Tóm tắt đơn hàng</h4>
+
+                @if (isBuyNow && Model.BuyNowProduct != null)
+                {
+                    <div class="summary-item">
+                        <img src="~/images/products/@Model.BuyNowProduct.MainImage" />
+                        <div class="info">
+                            <div class="name">@Model.BuyNowProduct.ProductName</div>
+                            <div class="qty">x @Model.BuyNowQuantity</div>
+                        </div>
+                        <div class="price">
+                            @Model.BuyNowTotal.ToString("N0") ₫
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    foreach (var i in cartItems)
+                    {
+                        <div class="summary-item">
+                            <img src="~/images/products/@i.Product.MainImage" />
+                            <div class="info">
+                                <div class="name">@i.Product.ProductName</div>
+                                <div class="qty">x @i.Quantity</div>
+                            </div>
+                            <div class="price">
+                                @((i.Quantity * i.Product.Price).ToString("N0")) ₫
+                            </div>
+                        </div>
+                    }
+                }
+
+                <div class="summary-total">
+                    <span>Tổng cộng</span>
+                    <span class="total">@total.ToString("N0") ₫</span>
+                   
+
+                </div>
+                <!-- ================= VIETQR INLINE PANEL ================= -->
+                <div id="vietQrBox" class="vietqr-box d-none">
+
+                    <h5 class="fw-bold text-danger mb-2">
+                        Thanh toán bằng VietQR
+                    </h5>
+
+                    <p class="mb-1">
+                        Số tiền:
+                        <strong class="text-danger">@total.ToString("N0") ₫</strong>
+                    </p>
+
+                    <p class="mb-3">
+                        Nội dung CK:
+                        <strong id="qrOrderCode"></strong>
+                    </p>
+
+                    <img id="vietQrImg"
+                         class="img-fluid rounded shadow mx-auto d-block"
+                         style="max-width:260px" />
+
+                    <div class="text-muted mt-3">
+                        Quét mã bằng app ngân hàng để thanh toán
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-dark mt-3 w-100"
+                            id="closeVietQr">
+                        Đóng
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<!-- ================= JS ================= -->
+<script>
+    /* =====================================================
+       🔔 AUTO HIDE ALERT (ERROR / SUCCESS)
+    ===================================================== */
+    const alertBox = document.getElementById("alertBox");
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.opacity = "0";
+            setTimeout(() => alertBox.remove(), 400);
+        }, 4000);
+    }
+
+    /* =====================================================
+       📍 KHAI BÁO BIẾN ĐỊA CHỈ
+    ===================================================== */
+    const province = document.getElementById("province");
+    const district = document.getElementById("district");
+    const ward = document.getElementById("ward");
+    const street = document.getElementById("street");
+    const fullAddress = document.getElementById("fullAddress");
+    const form = document.getElementById("checkoutForm");
+
+    let addressData = [];
+
+    /* =====================================================
+       💾 ĐỊA CHỈ ĐÃ LƯU CỦA USER (CHỐNG HTML ENCODE)
+    ===================================================== */
+    const savedAddress = @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(Model.RecipientAddress)
+        );
+
+    /* =====================================================
+       🌍 LOAD DỮ LIỆU ĐỊA GIỚI VIỆT NAM (JSON)
+    ===================================================== */
+    fetch("/data/vietnam-address.json")
+        .then(r => r.json())
+        .then(data => {
+            addressData = data;
+
+            // Load tỉnh/thành
+            data.forEach(p =>
+                province.insertAdjacentHTML(
+                    "beforeend",
+                    `<option value="${p.Name}">${p.Name}</option>`
+                )
+            );
+
+            prefillAddress();
+        });
+
+    /* =====================================================
+       🏙️ KHI CHỌN TỈNH → LOAD QUẬN/HUYỆN
+    ===================================================== */
+    province.addEventListener("change", () => {
+        district.disabled = false;
+        ward.disabled = true;
+
+        district.innerHTML = '<option value="">Quận / Huyện</option>';
+        ward.innerHTML = '<option value="">Phường / Xã</option>';
+
+        const p = addressData.find(x => x.Name === province.value);
+        p?.Districts.forEach(d =>
+            district.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${d.Name}">${d.Name}</option>`
+            )
+        );
+    });
+
+    /* =====================================================
+       🏘️ KHI CHỌN QUẬN → LOAD PHƯỜNG/XÃ
+    ===================================================== */
+    district.addEventListener("change", () => {
+        ward.disabled = false;
+        ward.innerHTML = '<option value="">Phường / Xã</option>';
+
+        const p = addressData.find(x => x.Name === province.value);
+        const d = p?.Districts.find(x => x.Name === district.value);
+        d?.Wards.forEach(w =>
+            ward.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${w.Name}">${w.Name}</option>`
+            )
+        );
+    });
+
+    /* =====================================================
+       🔁 TỰ ĐỘNG ĐIỀN ĐỊA CHỈ USER (NẾU CÓ)
+    ===================================================== */
+    function prefillAddress() {
+        if (!savedAddress) return;
+
+        const parts = savedAddress.split(",").map(x => x.trim());
+        if (parts.length < 4) return;
+
+        street.value = parts[0];
+        province.value = parts[3];
+        province.dispatchEvent(new Event("change"));
+
+        setTimeout(() => {
+            district.value = parts[2];
+            district.dispatchEvent(new Event("change"));
+
+            setTimeout(() => {
+                ward.value = parts[1];
+            }, 200);
+        }, 200);
+    }
+
+    /* =====================================================
+       ✅ GHÉP ĐỊA CHỈ + VALIDATE TRƯỚC KHI SUBMIT
+    ===================================================== */
+    form.addEventListener("submit", e => {
+        if (!province.value || !district.value || !ward.value || !street.value) {
+            alert("Vui lòng nhập đầy đủ địa chỉ nhận hàng");
+            e.preventDefault();
+            return;
+        }
+
+        fullAddress.value =
+            `${street.value}, ${ward.value}, ${district.value}, ${province.value}`;
+
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const vietQrRadio = document.querySelector("input[value='VietQR']");
+        const codRadio = document.querySelector("input[value='COD']");
+        const box = document.getElementById("vietQrBox");
+
+        if (!vietQrRadio || !box) return;
+
+        vietQrRadio.addEventListener("change", function () {
+            if (!this.checked) return;
+
+            const orderCode = "DH" + Date.now();
+
+            const qrUrl =
+                "https://img.vietqr.io/image/MB-0399355483-compact.png" +
+                "?amount=@((int)total)" +
+                "&addInfo=" + encodeURIComponent(orderCode) +
+                "&accountName=" + encodeURIComponent("DINH CONG DINH");
+
+            document.getElementById("vietQrImg").src = qrUrl;
+            document.getElementById("qrOrderCode").innerText = orderCode;
+
+            box.classList.remove("d-none");
+        });
+
+        codRadio?.addEventListener("change", function () {
+            box.classList.add("d-none");
+        });
+
+        document.getElementById("closeVietQr")
+            ?.addEventListener("click", function () {
+                box.classList.add("d-none");
+                codRadio.checked = true;
+            });
+    });
+</script>
+
+
+<style>
+    /* ===== WRAPPER ===== */
+    .checkout-wrapper {
+        background: #f5f6f8;
+        padding: 40px 0;
+    }
+
+    /* ===== LAYOUT ===== */
+    .checkout-container {
+        max-width: 1100px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1.2fr .8fr;
+        gap: 32px;
+    }
+
+    /* ===== LEFT BOX ===== */
+    .checkout-left {
+        background: #fff;
+        border-radius: 18px;
+        padding: 32px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    /* ===== TITLE ===== */
+    .checkout-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #d70018;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* ===== FORM ===== */
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            background: #fff;
+        }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: #d70018;
+                box-shadow: 0 0 0 2px rgba(215,0,24,.1);
+            }
+
+    /* ===== ADDRESS ===== */
+    .section-title {
+        margin: 26px 0 14px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #111;
+    }
+
+    /* 2 cột tỉnh / quận */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+        /* select */
+        .form-row select {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            background: #fff;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23999' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px;
+        }
+
+            .form-row select:disabled {
+                background-color: #f3f4f6;
+                cursor: not-allowed;
+            }
+
+            .form-row select:focus {
+                outline: none;
+                border-color: #d70018;
+                box-shadow: 0 0 0 2px rgba(215,0,24,.1);
+            }
+
+    /* ===== STREET ===== */
+    #street {
+        height: 48px;
+        margin-top: 4px;
+    }
+
+    /* ===== SUBMIT ===== */
+    .btn-submit {
+        margin-top: 26px;
+        width: 100%;
+        background: #d70018;
+        color: #fff;
+        border: none;
+        padding: 16px;
+        font-size: 17px;
+        font-weight: 700;
+        border-radius: 14px;
+        cursor: pointer;
+    }
+
+        .btn-submit:hover {
+            background: #b80014;
+        }
+
+    /* ===== RIGHT BOX ===== */
+    .checkout-right {
+        background: #fff;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        position: sticky;
+        top: 20px;
+    }
+
+    .summary-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    /* ===== ITEMS ===== */
+    .summary-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+        .summary-item img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+
+        .summary-item .info {
+            flex: 1;
+        }
+
+        .summary-item .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .summary-item .qty {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .summary-item .price {
+            font-weight: 700;
+            color: #d70018;
+        }
+
+    /* ===== MOBILE ===== */
+    @@media (max-width: 768px) {
+        .checkout-container
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-right {
+        position: static;
+        margin-top: 24px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #eee;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+        .summary-total .total {
+            color: #d70018;
+        }
+
+    .payment-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .payment-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .vietqr-box {
+        margin-top: 24px;
+        padding: 24px;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0,0,0,.15);
+        text-align: center;
+        animation: fadeUp .25s ease;
+    }
+
+    @@keyframes fadeUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,113 @@
+﻿@model IFixZoneWeb.Models.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <h3 class="text-center mb-3 fw-bold">
+            <i class="fa-solid fa-user-plus"></i> Đăng ký iFixZone
+        </h3>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        @if (TempData["RegisterSuccess"] != null)
+        {
+            <div class="alert alert-success">@TempData["RegisterSuccess"]</div>
+        }
+
+        <form asp-action="Register" method="post" class="card p-3 shadow-sm needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label">Họ tên</label>
+                <input asp-for="FullName" class="form-control" required />
+                <div class="invalid-feedback">
+                    Vui lòng nhập họ tên
+                </div>
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label">Tên đăng nhập</label>
+                <input asp-for="Username" class="form-control" required minlength="4" />
+                <div class="invalid-feedback">
+                    Tên đăng nhập ít nhất 4 ký tự
+                </div>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" type="email" required />
+                <div class="invalid-feedback">
+                    Vui lòng nhập email hợp lệ
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label">Mật khẩu</label>
+                <div class="input-group">
+                    <input asp-for="Password" type="password" class="form-control" required minlength="6" id="passwordInput" />
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <div class="invalid-feedback">
+                    Mật khẩu ít nhất 6 ký tự
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 fw-bold py-2">
+                <i class="fa-solid fa-user-plus me-2"></i>Đăng ký ngay
+            </button>
+
+            <p class="text-center mt-3 mb-0">
+                Đã có tài khoản?
+                <a asp-controller="Account" asp-action="Login" class="fw-bold text-success text-decoration-none">
+                    Đăng nhập ngay
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Toggle hiển thị/ẩn mật khẩu
+        document.getElementById('togglePassword')?.addEventListener('click', function () {
+            const passwordInput = document.getElementById('passwordInput');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // Bootstrap validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+}

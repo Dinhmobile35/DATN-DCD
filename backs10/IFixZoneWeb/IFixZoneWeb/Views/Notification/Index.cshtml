@@ -1,0 +1,57 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Notification>
+
+@{
+    ViewData["Title"] = "Thông báo";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold">Thông báo đơn hàng</h4>
+
+        @if (Model.Any(n => n.IsRead == false))
+        {
+            <form asp-action="MarkAllAsRead" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn btn-sm btn-outline-primary">
+                    Đánh dấu tất cả đã đọc
+                </button>
+            </form>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Bạn chưa có thông báo nào.
+        </div>
+    }
+    else
+    {
+        foreach (var n in Model)
+        {
+            <div class="card mb-2 @(n.IsRead == false ? "border-primary" : "")">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-semibold">
+                            @n.Content
+                        </p>
+                        <small class="text-muted">
+                            @n.CreatedAt?.ToString("dd/MM/yyyy HH:mm")
+                        </small>
+                    </div>
+
+                    @if (n.IsRead == false)
+                    {
+                        <form asp-action="MarkAsRead" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@n.NotificationId" />
+                            <button class="btn btn-sm btn-outline-success">
+                                Đã đọc
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

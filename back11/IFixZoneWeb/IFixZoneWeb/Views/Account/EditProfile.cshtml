@@ -1,0 +1,176 @@
+﻿@model IFixZoneWeb.Models.ViewModels.EditProfileViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa hồ sơ";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11">
+            <div class="profile-card">
+
+                <!-- HEADER -->
+                <div class="profile-header">
+                    <div class="avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h2 class="mb-1 fw-bold">Chỉnh sửa hồ sơ</h2>
+                        <p class="text-muted mb-0">Cập nhật thông tin cá nhân của bạn</p>
+                    </div>
+                </div>
+
+                <!-- BODY -->
+                <div class="profile-body">
+                    <form asp-action="EditProfile" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- READONLY INFO -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Tên đăng nhập</label>
+                                <input class="form-control readonly"
+                                       value="@Model.Username"
+                                       readonly />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input class="form-control readonly"
+                                       value="@Model.Email"
+                                       readonly />
+                            </div>
+                        </div>
+
+                     
+
+                        <hr class="my-4" />
+
+                        <!-- EDITABLE INFO -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="FullName" class="form-label fw-semibold">Họ và tên</label>
+                                <input asp-for="FullName"
+                                       class="form-control"
+                                       placeholder="Nhập họ và tên" />
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-semibold">Số điện thoại</label>
+                                <input asp-for="Phone"
+                                       class="form-control"
+                                       placeholder="0xxxxxxxxx" />
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Address" class="form-label fw-semibold">Địa chỉ</label>
+                            <textarea asp-for="Address"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Nhập địa chỉ"></textarea>
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+
+                        <!-- ACTION -->
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fa-solid fa-save me-2"></i>Lưu thay đổi
+                            </button>
+
+                            <a asp-action="Profile"
+                               class="btn btn-outline-secondary px-4">
+                                <i class="fa-solid fa-arrow-left me-2"></i>Quay lại
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    /* ===== CARD ===== */
+    .profile-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 18px 40px rgba(0,0,0,.12);
+        overflow: hidden;
+    }
+
+    /* ===== HEADER ===== */
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 28px 32px;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #fff;
+    }
+
+        .profile-header .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+    /* ===== BODY ===== */
+    .profile-body {
+        padding: 32px;
+    }
+
+    /* ===== FORM ===== */
+    .form-label {
+        margin-bottom: 6px;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        padding: 10px 14px;
+        border: 1px solid #e5e7eb;
+    }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 .15rem rgba(37,99,235,.15);
+        }
+
+        /* READONLY */
+        .form-control.readonly {
+            background: #f8fafc;
+            color: #6b7280;
+        }
+
+    /* BUTTON */
+    .btn {
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        border-color: #2563eb;
+    }
+
+        .btn-primary:hover {
+            background: #1e40af;
+            border-color: #1e40af;
+        }
+
+    /* HR */
+    hr {
+        border-top: 1px dashed #e5e7eb;
+    }
+</style>

@@ -1,0 +1,156 @@
+﻿@model IFixZoneWeb.Models.Entities.Cart
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<h3 class="mb-3 fw-bold">Giỏ hàng của bạn</h3>
+
+@if (Model.CartItems == null || !Model.CartItems.Any())
+{
+    <div class="alert alert-info text-center">
+        Giỏ hàng trống — <a asp-controller="Product" asp-action="Index">Tiếp tục mua sắm</a>
+    </div>
+}
+else
+{
+    <table class="table table-hover shadow-sm cart-table">
+        <thead class="table-light">
+            <tr>
+                <th>Ảnh</th>
+                <th>Sản phẩm</th>
+                <th class="text-center">Giá</th>
+                <th class="text-center">SL</th>
+                <th class="text-end">Thành tiền</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody id="cartBody">
+            @foreach (var item in Model.CartItems)
+            {
+                <tr data-id="@item.CartItemId">
+                    <td width="80">
+                        <img src="~/images/products/@(item.Product.MainImage ?? "no-image.jpg")"
+                             width="70" class="rounded border" />
+                    </td>
+
+                    <td class="fw-semibold">@item.Product.ProductName</td>
+
+                    <td class="text-danger fw-bold text-center price"
+                        data-price="@item.Product.Price">
+                        @((item.Product.Price).ToString("N0")) đ
+                    </td>
+
+                    <td width="110" class="text-center">
+                        <input type="number" class="form-control text-center qty"
+                               value="@item.Quantity" min="1" />
+                    </td>
+
+                    <td class="fw-bold text-end subtotal">
+                        @((item.Quantity * item.Product.Price).ToString("N0")) đ
+                    </td>
+
+                    <td width="60">
+                        <button class="btn btn-sm btn-outline-danger remove">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-end fw-bold fs-5">Tổng cộng:</td>
+                <td class="fs-4 text-danger text-end" id="grandTotal">
+                    @((Model.CartItems.Sum(x => x.Quantity * x.Product.Price).ToString("N0"))) đ
+                </td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="d-flex justify-content-between mt-3">
+        <a asp-controller="Product" asp-action="Index"
+           class="btn btn-outline-secondary">
+            ⬅ Tiếp tục mua sắm
+        </a>
+
+        <a asp-controller="Checkout" asp-action="Index"
+           class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-credit-card"></i> Thanh toán
+        </a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function format(v){ return Number(v).toLocaleString("vi-VN"); }
+
+        // UPDATE QTY
+        document.querySelectorAll(".qty").forEach(input => {
+            input.addEventListener("change", e => {
+
+                if (e.target.value < 1) e.target.value = 1;
+
+                const tr = e.target.closest("tr");
+                const id = tr.dataset.id;
+
+                fetch("/Cart/UpdateQuantity", {
+                    method:"POST",
+                    headers:{ "Content-Type":"application/x-www-form-urlencoded" },
+                    body:`cartItemId=${id}&quantity=${e.target.value}`
+                })
+                .then(r=>r.json())
+                .then(res=>{
+                    if(!res.success) return;
+
+                    tr.querySelector(".subtotal").innerText =
+                        format(res.subtotal) + " đ";
+
+                    document.getElementById("grandTotal").innerText =
+                        format(res.grandTotal) + " đ";
+                });
+            });
+        });
+
+        // REMOVE ITEM
+        document.querySelectorAll(".remove").forEach(btn=>{
+            btn.addEventListener("click", e=>{
+                const tr = e.target.closest("tr");
+                const id = tr.dataset.id;
+
+                fetch("/Cart/RemoveItem", {
+                    method:"POST",
+                    headers:{ "Content-Type":"application/x-www-form-urlencoded" },
+                    body:`cartItemId=${id}`
+                })
+                .then(r=>r.json())
+                .then(res=>{
+                    if(!res.success) return;
+                    tr.remove();
+                    location.reload();
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    .cart-table {
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+        .cart-table img {
+            background: #f3f4f6;
+        }
+
+    .qty {
+        border-radius: 10px;
+    }
+
+    .subtotal, .price {
+        font-family: "Segoe UI", Arial;
+    }
+</style>

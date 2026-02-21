@@ -1,0 +1,26 @@
+﻿@model IFixZoneWeb.Models.Entities.Category
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Danh mục";
+}
+
+<h4 class="fw-bold mb-3">
+    @(Model.CategoryId == 0 ? "Thêm danh mục" : "Sửa danh mục")
+</h4>
+
+<form method="post">
+    <input type="hidden" asp-for="CategoryId" />
+
+    <div class="mb-3">
+        <label>Tên danh mục</label>
+        <input asp-for="CategoryName" class="form-control" />
+        <span class="text-danger" asp-validation-for="CategoryName"></span>
+    </div>
+
+    <button class="btn btn-success">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

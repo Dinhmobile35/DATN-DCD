@@ -1,0 +1,140 @@
+﻿@model IFixZoneWeb.Models.Entities.Product
+
+@{
+    ViewData["Title"] = $"Quản lý thông số kỹ thuật - {Model.ProductName}";
+}
+
+<div class="container py-5">
+    <!-- Header chuyên nghiệp -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 pb-4 border-bottom">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="fa-solid fa-cog me-2"></i>
+                Thông số kỹ thuật
+            </h2>
+            <h4 class="text-muted mb-0">@Model.ProductName</h4>
+        </div>
+        <a asp-action="Edit" asp-controller="ProductAdmin" asp-route-id="@Model.ProductId" class="btn btn-outline-primary btn-lg mt-3 mt-md-0">
+            <i class="fa-solid fa-arrow-left me-2"></i>Quay lại sửa sản phẩm
+        </a>
+    </div>
+
+    <!-- Thêm mới - Card hiện đại -->
+    <div class="card shadow-lg border-0 rounded-4 mb-5 overflow-hidden">
+        <div class="card-header bg-gradient-primary text-white fw-bold py-4 d-flex align-items-center">
+            <i class="fa-solid fa-plus-circle me-3 fs-4"></i>
+            Thêm thông số kỹ thuật mới
+        </div>
+        <div class="card-body bg-white p-4">
+            <form asp-action="AddSpecification" asp-controller="ProductAdmin" method="post" class="needs-validation" novalidate>
+                <input type="hidden" name="productId" value="@Model.ProductId" />
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold fs-5">Tên thông số</label>
+                        <input type="text" name="specName" class="form-control form-control-lg" required placeholder="VD: CPU, RAM, Màn hình..." />
+                        <div class="invalid-feedback fs-6">Vui lòng nhập tên thông số</div>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold fs-5">Giá trị</label>
+                        <input type="text" name="specValue" class="form-control form-control-lg" required placeholder="VD: Intel Core i7-13700K, 16GB DDR5..." />
+                        <div class="invalid-feedback fs-6">Vui lòng nhập giá trị</div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">
+                            <i class="fa-solid fa-plus me-2"></i>Thêm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách - Card đẹp, chuyên nghiệp -->
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <div class="card-header bg-gradient-light d-flex justify-content-between align-items-center py-4">
+            <h5 class="mb-0 fw-bold fs-4">
+                <i class="fa-solid fa-list-ul me-2 text-primary"></i>
+                Danh sách thông số (@(Model.ProductSpecifications?.Count ?? 0))
+            </h5>
+            @if (Model.ProductSpecifications?.Any() == true)
+            {
+                <small class="text-muted fs-5">Sắp xếp theo tên</small>
+            }
+        </div>
+        <div class="card-body p-0">
+            @if (Model.ProductSpecifications == null || !Model.ProductSpecifications.Any())
+            {
+                <div class="p-5 text-center text-muted bg-light">
+                    <i class="fa-solid fa-list-ul fa-6x mb-4 opacity-50"></i>
+                    <h5 class="fw-bold mb-3">Chưa có thông số kỹ thuật nào</h5>
+                    <p class="fs-5">Hãy thêm thông số mới ở phần trên để hiển thị ở đây.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="py-3">Tên thông số</th>
+                                <th class="py-3">Giá trị</th>
+                                <th class="py-3 text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var spec in Model.ProductSpecifications.OrderBy(s => s.SpecName))
+                            {
+                                <tr class="align-middle">
+                                    <td class="fw-medium">@spec.SpecName</td>
+                                    <td>@spec.SpecValue</td>
+                                    <td class="text-center py-3">
+                                        <form asp-action="EditSpecification" asp-controller="ProductAdmin" method="post" class="d-flex align-items-center justify-content-center">
+                                            <input type="hidden" name="specId" value="@spec.SpecId" />
+                                            <input type="text" name="specName" value="@spec.SpecName" class="form-control form-control-sm me-2" required style="max-width: 200px;" />
+                                            <input type="text" name="specValue" value="@spec.SpecValue" class="form-control form-control-sm me-2" required style="max-width: 250px;" />
+                                            <button type="submit" class="btn btn-sm btn-success me-1" title="Lưu thay đổi">
+                                                <i class="fa-solid fa-save"></i>
+                                            </button>
+                                        </form>
+
+                                        <form asp-action="DeleteSpecification" asp-controller="ProductAdmin" method="post" class="d-inline">
+                                            <input type="hidden" name="specId" value="@spec.SpecId" />
+                                            <button type="submit" class="btn btn-sm btn-danger ms-2" onclick="return confirm('Xóa thông số \" @spec.SpecName\"?');" title="Xóa thông số">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+        <div class="card-footer bg-light text-center py-3">
+            <small class="text-muted">Tổng cộng: @(Model.ProductSpecifications?.Count ?? 0) thông số</small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Focus tự động vào input thêm mới
+            document.querySelector('input[name="specName"]')?.focus();
+
+            // Bootstrap validation
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,6 @@
+tài khoản user : Dinhdc
+mật khẩu Dinh123
+tài khoản admin : admin
+mật khẩu Dinh123
+tài khoản staff : staff1
+mật khẩu Dinh123

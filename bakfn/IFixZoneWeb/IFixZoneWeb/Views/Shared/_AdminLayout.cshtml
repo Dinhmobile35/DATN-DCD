@@ -1,0 +1,284 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Http
+@{
+    var name = Http.HttpContext?.Session.GetString("FullName") ?? "Admin";
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string Active(string c) => currentController == c ? "active" : "";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - iFixZone Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --ifx-red: #d70018;
+            --ifx-red-dark: #b80014;
+            --ifx-shadow: 0 12px 30px rgba(0,0,0,.15);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* ======================
+                   🎆 PHÁO HOA
+                ====================== */
+        #fireworks {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ======================
+                   🌸🧧 PARTICLES
+                ====================== */
+        #season-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .season-particle {
+            position: absolute;
+            top: -10%;
+            font-size: 18px;
+            animation: fall linear infinite;
+            opacity: .9;
+        }
+
+        @@keyframes fall {
+            to
+
+        {
+            transform: translateY(120vh) rotate(360deg);
+        }
+
+        }
+
+        body.event-tet-spring {
+            background: linear-gradient(#fff7f9, #ffffff);
+        }
+
+        /* ======================
+                   LAYOUT
+                ====================== */
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ======================
+                   SIDEBAR
+                ====================== */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--ifx-red), var(--ifx-red-dark));
+            color: #fff;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--ifx-shadow);
+        }
+
+        .sidebar-header {
+            padding: 18px;
+            border-bottom: 1px solid rgba(255,255,255,.25);
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+            .admin-brand img {
+                height: 42px;
+            }
+
+        .sidebar-group {
+            padding: 16px 20px 6px;
+            font-size: .75rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.75);
+        }
+
+        .sidebar a {
+            margin: 4px 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            transition: .25s;
+        }
+
+            .sidebar a:hover,
+            .sidebar .active {
+                background: #fff;
+                color: var(--ifx-red);
+                font-weight: 700;
+            }
+
+        /* ======================
+                   MAIN
+                ====================== */
+        .main-content-wrapper {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: #fff;
+            padding: 16px 30px;
+            box-shadow: var(--ifx-shadow);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .page-content {
+            padding: 30px;
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body class="event-tet-spring">
+
+    <!-- 🎆 PHÁO HOA -->
+    <canvas id="fireworks"></canvas>
+
+    <!-- 🌸🧧 RƠI -->
+    <div id="season-bg"></div>
+
+    <div class="admin-wrapper">
+
+        <!-- SIDEBAR -->
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a asp-controller="Admin" asp-action="Dashboard" class="admin-brand">
+                    <img src="~/images/logo/logo-fx-white.png" alt="iFixZone">
+                    <span>iFixZone Admin</span>
+                </a>
+            </div>
+
+            <div class="sidebar-group">QUẢN LÝ CƠ BẢN</div>
+            <a asp-controller="Admin" asp-action="Dashboard" class="@Active("Admin")">
+                <i class="fa-solid fa-gauge-high"></i> Dashboard
+            </a>
+            <a asp-controller="CategoryAdmin" asp-action="Index" class="@Active("CategoryAdmin")">
+                <i class="fa-solid fa-tags"></i> Danh mục
+            </a>
+            <a asp-controller="ProductAdmin" asp-action="Index" class="@Active("ProductAdmin")">
+                <i class="fa-solid fa-box"></i> Sản phẩm
+            </a>
+
+            <div class="sidebar-group">KHÁCH HÀNG & ĐƠN HÀNG</div>
+            <a asp-controller="UserAdmin" asp-action="Index" class="@Active("UserAdmin")">
+                <i class="fa-solid fa-users"></i> Người dùng
+            </a>
+            <a asp-controller="OrderAdmin" asp-action="Index" class="@Active("OrderAdmin")">
+                <i class="fa-solid fa-cart-shopping"></i> Đơn hàng
+            </a>
+            <a asp-controller="ReviewAdmin" asp-action="Index" class="@Active("ReviewAdmin")">
+                <i class="fa-solid fa-star"></i> Đánh giá
+            </a>
+
+            <hr class="mx-4 opacity-50">
+
+            <a asp-controller="Account" asp-action="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+            </a>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="main-content-wrapper">
+            <header class="topbar">
+                Xin chào, <strong>@name</strong>
+            </header>
+
+            <main class="page-content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- 🎆 FIREWORKS SCRIPT -->
+    <script>
+        const canvas = document.getElementById("fireworks");
+        const ctx = canvas.getContext("2d");
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        function firework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height * 0.3;
+            const colors = ["#ff3b3b", "#ffd700", "#ff69b4", "#00eaff"];
+
+            for (let i = 0; i < 40; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 4 + 2;
+                ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                ctx.fillRect(
+                    x + Math.cos(angle) * speed * i,
+                    y + Math.sin(angle) * speed * i,
+                    3, 3
+                );
+            }
+        }
+
+        setInterval(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            firework();
+        }, 800);
+    </script>
+
+    <!-- 🌸🧧 PARTICLE SCRIPT -->
+    <script>
+        const bg = document.getElementById("season-bg");
+        const icons = ["🌸", "🧧"];
+
+        setInterval(() => {
+            const el = document.createElement("span");
+            el.className = "season-particle";
+            el.innerText = icons[Math.floor(Math.random() * icons.length)];
+            el.style.left = Math.random() * 100 + "vw";
+            el.style.fontSize = (18 + Math.random() * 12) + "px";
+            el.style.animationDuration = (6 + Math.random() * 6) + "s";
+            bg.appendChild(el);
+            setTimeout(() => el.remove(), 13000);
+        }, 450);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

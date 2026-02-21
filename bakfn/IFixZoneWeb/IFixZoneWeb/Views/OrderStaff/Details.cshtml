@@ -1,0 +1,164 @@
+﻿@model IFixZoneWeb.Models.Entities.Order
+@{
+    Layout = "_StaffLayout";
+    ViewData["Title"] = $"Chi tiết đơn hàng #{Model.OrderCode}";
+}
+
+<div class="container-fluid py-4">
+
+    <h3 class="fw-bold text-ifix mb-4">
+        Chi tiết đơn hàng #@Model.OrderCode
+    </h3>
+
+    <div class="row g-4">
+        <!-- Người nhận -->
+        <div class="col-md-6">
+            <div class="card ifix-card h-100">
+                <div class="card-header ifix-header">
+                    <i class="fa fa-user me-2"></i>Thông tin người nhận
+                </div>
+                <div class="card-body">
+                    <p><b>Tên:</b> @Model.RecipientName</p>
+                    <p><b>SĐT:</b> @Model.RecipientPhone</p>
+                    <p><b>Địa chỉ:</b> @Model.RecipientAddress</p>
+                    <p class="mb-0"><b>Ngày đặt:</b> @Model.OrderDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="col-md-6">
+            <div class="card ifix-card h-100">
+                <div class="card-header ifix-header">
+                    <i class="fa fa-tasks me-2"></i>Trạng thái đơn hàng
+                </div>
+                <div class="card-body">
+                    <p>
+                        <b>Hiện tại:</b>
+                        <span class="badge bg-@StatusColor(Model.Status) fs-6 px-3 py-2">
+                            @Model.Status
+                        </span>
+                    </p>
+
+                    <form asp-action="UpdateStatus" method="post" class="d-grid gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.OrderId" />
+
+                        <select name="newStatus" class="form-select form-select-lg">
+                            @foreach (var s in ViewBag.OrderStatuses)
+                            {
+                                <option value="@s" selected="@(s == Model.Status)">@s</option>
+                            }
+                        </select>
+
+                        <button class="btn btn-ifix">
+                            <i class="fa fa-sync-alt me-2"></i>Cập nhật
+                        </button>
+                    </form>
+
+                    <a asp-action="Print" asp-route-id="@Model.OrderId"
+                       target="_blank"
+                       class="btn btn-outline-ifix mt-3">
+                        <i class="fa fa-print me-2"></i>In đơn hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sản phẩm -->
+    <div class="card ifix-card mt-4">
+        <div class="card-header ifix-header">
+            <i class="fa fa-box me-2"></i>Sản phẩm trong đơn
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th class="text-center">SL</th>
+                        <th class="text-end">Đơn giá</th>
+                        <th class="text-end">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var i in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@i.Product?.ProductName</td>
+                            <td class="text-center fw-bold">@i.Quantity</td>
+                            <td class="text-end">@i.UnitPrice.ToString("N0") ₫</td>
+                            <td class="text-end fw-bold text-ifix">
+                                @((i.Quantity * i.UnitPrice).ToString("N0")) ₫
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="fw-bold">
+                        <td colspan="3" class="text-end">Tổng cộng:</td>
+                        <td class="text-end text-ifix fs-5">
+                            @(Model.TotalAmount?.ToString("N0")) ₫
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string StatusColor(string? s) => s switch
+    {
+        "Mới" => "primary",
+        "Xác nhận" => "info",
+        "Đang chuẩn bị" => "warning",
+        "Đang giao" => "secondary",
+        "Hoàn thành" => "success",
+        "Hủy" => "danger",
+        _ => "secondary"
+    };
+}
+
+<style>
+    :root {
+        --ifix-red: #e11d48;
+        --ifix-red-dark: #be123c;
+    }
+
+    .text-ifix {
+        color: var(--ifix-red);
+    }
+
+    .ifix-card {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    .ifix-header {
+        background: linear-gradient(135deg, var(--ifix-red), var(--ifix-red-dark));
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-ifix {
+        background: var(--ifix-red);
+        color: white;
+        border: none;
+    }
+
+        .btn-ifix:hover {
+            background: var(--ifix-red-dark);
+        }
+
+    .btn-outline-ifix {
+        border: 2px solid var(--ifix-red);
+        color: var(--ifix-red);
+    }
+
+        .btn-outline-ifix:hover {
+            background: var(--ifix-red);
+            color: white;
+        }
+</style>

@@ -1,0 +1,56 @@
+﻿@model IFixZoneWeb.Models.Entities.Product
+@{
+    Layout = "_AdminLayout";  // <-- QUAN TRỌNG: Dòng này phải có để dùng layout admin
+}
+@{
+    ViewData["Title"] = "Sản phẩm";
+}
+
+<h3 class="fw-bold mb-3">
+    @(Model?.ProductId == 0 ? "Thêm sản phẩm" : "Sửa sản phẩm")
+</h3>
+
+<form method="post" enctype="multipart/form-data">
+
+    <input type="hidden" asp-for="ProductId" />
+    <input type="hidden" asp-for="MainImage" />
+
+    <div class="mb-3">
+        <label>Tên sản phẩm</label>
+        <input asp-for="ProductName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Danh mục</label>
+        <select asp-for="CategoryId"
+                class="form-select"
+                asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "CategoryName"))">
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Giá</label>
+        <input asp-for="Price" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Tồn kho</label>
+        <input asp-for="Stock" class="form-control" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model?.MainImage))
+    {
+        <div class="mb-2">
+            <label>Ảnh hiện tại</label><br />
+            <img src="~/images/products/@Model.MainImage" style="max-height:140px" />
+        </div>
+    }
+
+    <div class="mb-3">
+        <label>Chọn ảnh mới</label>
+        <input type="file" name="imageFile" class="form-control" />
+    </div>
+
+    <button class="btn btn-success">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

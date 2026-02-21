@@ -1,0 +1,161 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Review>
+@using IFixZoneWeb.Models.Entities
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý đánh giá";
+    var products = ViewBag.Products as List<Product> ?? new();
+    int? selectedProduct = ViewBag.SelectedProduct;
+    int? selectedRating = ViewBag.SelectedRating;
+}
+
+<div class="container-fluid py-4">
+
+    <h4 class="fw-bold text-ifix mb-4">
+        <i class="fa fa-star me-2"></i>Quản lý đánh giá sản phẩm
+    </h4>
+
+    <!-- FILTER -->
+    <div class="card ifix-card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="fw-semibold">Sản phẩm</label>
+                    <select name="productId" class="form-select">
+                        <option value="">Tất cả</option>
+                        @foreach (var p in products)
+                        {
+                            <option value="@p.ProductId"
+                                    selected="@(selectedProduct == p.ProductId)">
+                                @p.ProductName
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="fw-semibold">Rating</label>
+                    <select name="rating" class="form-select">
+                        <option value="">Tất cả</option>
+                        @for (int i = 5; i >= 1; i--)
+                        {
+                            <option value="@i"
+                                    selected="@(selectedRating == i)">
+                                @i ⭐
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <button class="btn btn-ifix w-100">
+                        <i class="fa fa-filter me-1"></i>Lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card ifix-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Sản phẩm</th>
+                        <th>Rating</th>
+                        <th>Bình luận</th>
+                        <th>Ngày</th>
+                        <th class="text-center" style="width:90px">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        foreach (var r in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@r.User?.FullName</strong><br />
+                                    <small class="text-muted">@r.User?.Email</small>
+                                </td>
+                                <td>@r.Product?.ProductName</td>
+                                <td>
+                                    <span class="badge bg-warning text-dark px-3 py-2">
+                                        @r.Rating ⭐
+                                    </span>
+                                </td>
+                                <td style="max-width:350px">
+                                    @r.Comment
+                                </td>
+                                <td>
+                                    @(r.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-danger"
+                                            onclick="deleteReview(@r.ReviewId)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                Không có đánh giá nào
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteReview(id) {
+        if (!confirm("Bạn chắc chắn muốn xóa đánh giá này?")) return;
+
+        fetch('/Admin/ReviewAdmin/Delete/' + id, {
+            method: 'POST'
+        })
+        .then(r => r.json())
+        .then(res => {
+            if (res.success) location.reload();
+        });
+    }
+</script>
+
+<style>
+    :root {
+        --ifix-red: #e11d48;
+        --ifix-red-dark: #be123c;
+    }
+
+    .text-ifix {
+        color: var(--ifix-red);
+    }
+
+    .ifix-card {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    .btn-ifix {
+        background: var(--ifix-red);
+        color: white;
+        border: none;
+    }
+
+        .btn-ifix:hover {
+            background: var(--ifix-red-dark);
+        }
+
+    table td {
+        vertical-align: middle;
+    }
+</style>

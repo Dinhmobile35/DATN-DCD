@@ -1,0 +1,227 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.Category>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý danh mục";
+
+    var totalMap = ViewBag.TotalMap as Dictionary<int, int>;
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<style>
+    .tree-toggle {
+        cursor: pointer;
+        margin-right: 6px;
+        color: #0d6efd;
+    }
+
+    .cat-root {
+        background: #f8fafc;
+        font-weight: 700;
+    }
+
+    .tree-row:hover {
+        background: #f1f5f9;
+    }
+
+    .badge-count {
+        background: #e9ecef;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .highlight {
+        background: #fff3cd !important;
+    }
+</style>
+
+<h4 class="fw-bold mb-3">
+    <i class="fa-solid fa-layer-group me-2 text-primary"></i>
+    Quản lý danh mục
+</h4>
+
+<!-- SEARCH + FILTER + ADD -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form method="get" class="row g-2 align-items-center flex-grow-1">
+
+        <!-- SEARCH -->
+        <div class="col-md-4">
+            <input name="q"
+                   value="@ViewBag.Query"
+                   class="form-control"
+                   placeholder="🔍 Tìm danh mục..." />
+        </div>
+
+        <!-- FILTER ROOT -->
+        <div class="col-md-4">
+            <select name="rootId" class="form-select">
+                <option value="">🌱 Tất cả danh mục gốc</option>
+                @foreach (var r in (IEnumerable<IFixZoneWeb.Models.Entities.Category>)ViewBag.RootCategories)
+                {
+                    <option value="@r.CategoryId"
+                            selected="@(ViewBag.RootId != null && (int)ViewBag.RootId == r.CategoryId)">
+                        📁 @r.CategoryName
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                <i class="fa-solid fa-filter me-1"></i> Lọc
+            </button>
+        </div>
+    </form>
+
+    <a class="btn btn-success ms-3" asp-action="Edit">
+        <i class="fa-solid fa-plus me-1"></i> Thêm danh mục
+    </a>
+</div>
+
+<!-- TABLE -->
+<div class="table-responsive">
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th width="70">ID</th>
+                <th>Tên danh mục</th>
+                <th width="160">Tổng sản phẩm</th>
+                <th width="140" class="text-center">Thao tác</th>
+            </tr>
+        </thead>
+
+        <tbody id="category-body">
+            @foreach (var root in Model.Where(x => x.ParentId == null))
+            {
+                <tr class="cat-root tree-row"
+                    data-id="@root.CategoryId"
+                    data-level="0">
+
+                    <td>@root.CategoryId</td>
+
+                    <td>
+                        <span class="tree-toggle" data-id="@root.CategoryId">
+                            <i class="fa-solid fa-caret-right"></i>
+                        </span>
+                        <i class="fa-solid fa-folder-open text-warning me-1"></i>
+                        @root.CategoryName
+                    </td>
+
+                    <td>
+                        <span class="badge badge-count">
+                            @(totalMap?[root.CategoryId] ?? 0)
+                        </span>
+                    </td>
+
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-warning me-1"
+                           asp-action="Edit"
+                           asp-route-id="@root.CategoryId"
+                           title="Sửa">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+
+                        @if (isAdmin)
+                        {
+                            <form asp-action="Delete"
+                                  asp-route-id="@root.CategoryId"
+                                  method="post"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Xóa danh mục này?');">
+                                <button class="btn btn-sm btn-danger" title="Xóa">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- TREE + SEARCH SCRIPT -->
+<script>
+    document.addEventListener("click", async function (e) {
+        const toggle = e.target.closest(".tree-toggle");
+        if (!toggle) return;
+
+        const parentId = toggle.dataset.id;
+        const row = toggle.closest("tr");
+        const level = parseInt(row.dataset.level);
+        const icon = toggle.querySelector("i");
+
+        // ĐÃ LOAD → CHỈ TOGGLE
+        if (row.dataset.loaded === "true") {
+            let next = row.nextElementSibling;
+            while (next && parseInt(next.dataset.level) > level) {
+                next.classList.toggle("d-none");
+                next = next.nextElementSibling;
+            }
+            icon.classList.toggle("fa-caret-right");
+            icon.classList.toggle("fa-caret-down");
+            return;
+        }
+
+        // AJAX LOAD CHILDREN
+       const res = await fetch(`/CategoryAdmin/LoadChildren?parentId=${parentId}`);
+
+        const children = await res.json();
+
+        let html = "";
+        children.forEach(c => {
+            html += `
+            <tr class="tree-row"
+                data-id="${c.categoryId}"
+                data-level="${level + 1}">
+                <td>${c.categoryId}</td>
+                <td style="padding-left:${(level + 1) * 28}px">
+                    ${c.hasChildren ? `
+                    <span class="tree-toggle" data-id="${c.categoryId}">
+                        <i class="fa-solid fa-caret-right"></i>
+                    </span>` : ""}
+                    <i class="fa-solid fa-folder text-secondary me-1"></i>
+                    ${c.categoryName}
+                </td>
+                <td>
+                    <span class="badge badge-count">
+                        ${c.productCount}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-sm btn-warning me-1"
+                       href="/CategoryAdmin/Edit/${c.categoryId}">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    ${@isAdmin.ToString().ToLower() ? `
+                    <form method="post"
+                          action="/CategoryAdmin/Delete/${c.categoryId}"
+                          class="d-inline"
+                          onsubmit="return confirm('Xóa danh mục này?');">
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>` : ""}
+                </td>
+            </tr>`;
+        });
+
+        row.insertAdjacentHTML("afterend", html);
+        row.dataset.loaded = "true";
+
+        icon.classList.remove("fa-caret-right");
+        icon.classList.add("fa-caret-down");
+    });
+
+    // HIGHLIGHT SEARCH
+    document.addEventListener("DOMContentLoaded", () => {
+        const keyword = "@ViewBag.Query";
+        if (!keyword) return;
+
+        document.querySelectorAll("#category-body tr").forEach(row => {
+            if (row.innerText.toLowerCase().includes(keyword.toLowerCase())) {
+                row.classList.add("highlight");
+            }
+        });
+    });
+</script>

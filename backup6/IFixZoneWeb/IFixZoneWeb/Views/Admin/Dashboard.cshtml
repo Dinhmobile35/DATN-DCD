@@ -1,0 +1,66 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<h3 class="fw-bold mb-4">
+    <i class="fa-solid fa-gauge"></i> Bảng điều khiển
+</h3>
+
+<div class="row g-3">
+
+    <div class="col-md-3">
+        <div class="card bg-primary text-white p-3 shadow rounded-3">
+            <h6 class="mb-1">Người dùng</h6>
+            <h2 class="fw-bold">@Model.Users</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-success text-white p-3 shadow rounded-3">
+            <h6 class="mb-1">Sản phẩm</h6>
+            <h2 class="fw-bold">@Model.Products</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark p-3 shadow rounded-3">
+            <h6 class="mb-1">Đơn hàng</h6>
+            <h2 class="fw-bold">@Model.Orders</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-danger text-white p-3 shadow rounded-3">
+            <h6 class="mb-1">Doanh thu</h6>
+            <h2 class="fw-bold">@String.Format("{0:N0} đ", Model.Revenue)</h2>
+        </div>
+    </div>
+
+</div>
+
+<hr class="my-4" />
+
+<!-- 🔹 HƯỚNG DẪN SỬ DỤNG ADMIN -->
+<div class="card shadow-sm">
+    <div class="card-header fw-bold">
+        <i class="fa-solid fa-circle-info"></i> Hướng dẫn sử dụng khu vực quản trị
+    </div>
+
+    <div class="card-body">
+        <ul class="mb-2">
+            <li>Vào <b>Quản lý sản phẩm</b> để thêm / sửa / xóa sản phẩm.</li>
+            <li>Vào <b>Quản lý người dùng</b> để tạo, chỉnh sửa và khóa tài khoản.</li>
+            <li>Vào <b>Quản lý quyền</b> để gán / bỏ quyền cho người dùng (Admin, Staff, Customer).</li>
+        </ul>
+
+        <p class="text-muted mb-3">
+            Các chức năng nằm trong menu bên trái (Sidebar).
+            Bạn có thể mở nhanh bất kỳ mục nào từ đây.
+        </p>
+
+        <a class="btn btn-outline-dark" asp-controller="Home" asp-action="Index">
+            <i class="fa-solid fa-arrow-left"></i> Về trang chủ
+        </a>
+    </div>
+</div>

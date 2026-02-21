@@ -1,0 +1,430 @@
+﻿@model IFixZoneWeb.Models.Entities.Cart
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<a asp-controller="Home" asp-action="Index"
+   class="btn btn-outline-secondary mb-3 d-inline-flex align-items-center">
+    <i class="fa fa-arrow-left me-2"></i> Quay lại
+</a>
+
+<h3 class="mb-4 fw-bold text-center text-primary">Giỏ hàng của bạn</h3>
+
+@if (Model.CartItems == null || !Model.CartItems.Any())
+{
+    <div class="alert alert-info text-center py-5 rounded-4 shadow-sm">
+        <i class="fa fa-shopping-cart fa-3x mb-3 text-muted"></i>
+        <p class="fs-5">Giỏ hàng của bạn đang trống!</p>
+        <a asp-controller="Product" asp-action="Index"
+           class="btn btn-primary px-4">Tiếp tục mua sắm</a>
+    </div>
+}
+else
+{
+    <form asp-controller="Checkout" asp-action="Index" method="get">
+        @Html.AntiForgeryToken()
+
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-0">
+
+                <!-- CHỌN TẤT CẢ -->
+                <div class="p-3 bg-light border-bottom d-flex align-items-center">
+                    <input type="checkbox" id="checkAll" class="form-check-input me-2">
+                    <label for="checkAll" class="fw-bold">Chọn tất cả</label>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover cart-table mb-0">
+                        <tbody>
+
+                            @foreach (var item in Model.CartItems)
+                            {
+                                var outStock = item.Product.Stock <= 0;
+
+                                <tr data-id="@item.CartItemId"
+                                    data-price="@item.Product.Price"
+                                    data-qty="@item.Quantity"
+                                    class="@(outStock ? "out-stock" : "")">
+
+                                    <!-- CHECK -->
+                                    <td class="text-center">
+                                        <input type="checkbox"
+                                               class="item-check form-check-input"
+                                               name="selectedCartItemIds"
+                                               value="@item.CartItemId"
+                                               @(outStock ? "disabled" : "") />
+                                    </td>
+
+                                    <!-- IMAGE -->
+                                    <td>
+                                        <img src="~/images/products/@(item.Product.MainImage ?? "no-image.jpg")"
+                                             class="rounded border" width="70">
+                                    </td>
+
+                                    <!-- NAME -->
+                                    <td>
+                                        <a asp-controller="Product"
+                                           asp-action="Details"
+                                           asp-route-id="@item.ProductId"
+                                           class="hover-link text-dark text-decoration-none fw-semibold">
+                                            @item.Product.ProductName
+                                        </a>
+
+                                        @if (outStock)
+                                        {
+                                            <div class="mt-1">
+                                                <span class="badge bg-danger">Hết hàng</span>
+                                                <small class="text-muted d-block">
+                                                    Sản phẩm đã hết – vui lòng xóa khỏi giỏ
+                                                </small>
+                                            </div>
+                                        }
+                                    </td>
+
+                                    <!-- PRICE -->
+                                    <td class="text-danger fw-bold text-center price">
+                                        @item.Product.Price.ToString("N0") ₫
+                                    </td>
+
+                                    <!-- QTY -->
+                                    <td class="text-center">
+                                        <input type="number"
+                                               class="form-control qty rounded-pill text-center"
+                                               value="@item.Quantity"
+                                               min="1"
+                                               @(outStock ? "disabled" : "") />
+                                    </td>
+
+                                    <!-- SUBTOTAL -->
+                                    <td class="fw-bold text-end subtotal">
+                                        @((item.Quantity * item.Product.Price).ToString("N0")) ₫
+                                    </td>
+
+                                    <!-- REMOVE (LUÔN CHO PHÉP) -->
+                                    <td class="text-center">
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger remove">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- THANH TOÁN -->
+        <div class="card shadow-sm mt-4 rounded-4 sticky-bottom">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="fs-5 fw-bold">
+                    Tạm tính:
+                    <span id="tempTotal" class="text-danger fs-4">0 ₫</span>
+                </div>
+
+                <button type="submit"
+                        id="btnCheckout"
+                        class="btn btn-danger btn-lg"
+                        disabled>
+                    <i class="fa-solid fa-credit-card me-2"></i> Thanh toán
+                </button>
+            </div>
+        </div>
+    </form>
+}
+
+
+
+@section Scripts {
+    <script>
+        /* ================= ANTI FORGERY TOKEN ================= */
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        /* ================= FORMAT TIỀN ================= */
+        function formatMoney(v) {
+            return Number(v).toLocaleString("vi-VN") + " ₫";
+        }
+
+        /* ================= LOAD MINI CART ================= */
+        function loadMiniCart() {
+            fetch("/Cart/Mini")
+                .then(r => r.json())
+                .then(res => {
+                    const cartCount = document.getElementById("cartCount");
+                    const cartCountMobile = document.getElementById("cartCountMobile");
+                    const cartText = document.getElementById("cartText");
+                    const miniCart = document.getElementById("miniCart");
+
+                    if (cartCount) cartCount.innerText = res.quantity || 0;
+                    if (cartCountMobile) cartCountMobile.innerText = res.quantity || 0;
+
+                    if (cartText)
+                        cartText.innerText = `(${res.quantity} SP – ${res.itemCount} loại)`;
+
+                    if (miniCart) {
+                        miniCart.innerHTML =
+                            res.html || "<div class='text-center py-3'>Giỏ hàng trống</div>";
+                    }
+                });
+        }
+
+        /* ================= TÍNH TỔNG TẠM (🔥 FIX LỖI) ================= */
+        function calcTempTotal() {
+            let total = 0;
+            let hasChecked = false;
+
+            document.querySelectorAll(".item-check:checked").forEach(cb => {
+                const tr = cb.closest("tr");
+                const price = parseFloat(tr.dataset.price) || 0;
+
+                // 🔥 LẤY QTY TRỰC TIẾP TỪ INPUT (KHÔNG DÙNG dataset.qty)
+                const qtyInput = tr.querySelector(".qty");
+                const qty = parseInt(qtyInput?.value) || 0;
+
+                total += price * qty;
+                hasChecked = true;
+            });
+
+            const tempTotal = document.getElementById("tempTotal");
+            if (tempTotal) tempTotal.innerText = formatMoney(total);
+
+            const btnCheckout = document.getElementById("btnCheckout");
+            if (btnCheckout) btnCheckout.disabled = !hasChecked;
+        }
+
+        /* ================= CHECK ALL ================= */
+        document.getElementById("checkAll")?.addEventListener("change", e => {
+            document.querySelectorAll(".item-check:not(:disabled)").forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+            calcTempTotal();
+        });
+
+        /* ================= CHECK SINGLE ================= */
+        document.querySelectorAll(".item-check").forEach(cb => {
+            cb.addEventListener("change", calcTempTotal);
+        });
+
+        /* ================= UPDATE QUANTITY (ROLLBACK + DISABLE) ================= */
+        document.querySelectorAll(".qty").forEach(input => {
+            input.addEventListener("change", e => {
+                let qty = parseInt(e.target.value) || 1;
+                if (qty < 1) qty = 1;
+
+                const tr = e.target.closest("tr");
+                const id = tr.dataset.id;
+
+                const oldQty = parseInt(e.target.defaultValue) || 1;
+
+                e.target.value = qty;
+                input.disabled = true;
+
+                fetch("/Cart/UpdateQuantity", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "RequestVerificationToken": token
+                    },
+                    body: `cartItemId=${id}&quantity=${qty}`
+                })
+                .then(r => r.json())
+                .then(res => {
+                    if (res.success) {
+                        tr.querySelector(".subtotal").innerText =
+                            formatMoney(res.subtotal);
+
+                        // cập nhật defaultValue để lần rollback sau chuẩn
+                        e.target.defaultValue = qty;
+
+                        calcTempTotal();
+                        loadMiniCart();
+                    } else {
+                        // 🔁 ROLLBACK UI
+                        e.target.value = oldQty;
+                        alert(res.message || "Không đủ tồn kho");
+                    }
+                })
+                .catch(() => {
+                    e.target.value = oldQty;
+                    alert("Lỗi kết nối server");
+                })
+                .finally(() => {
+                    input.disabled = false;
+                });
+            });
+        });
+
+        /* ================= REMOVE ITEM (HẾT HÀNG VẪN XÓA) ================= */
+        document.querySelectorAll(".remove").forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
+
+                const tr = btn.closest("tr");
+                const id = tr.dataset.id;
+
+                btn.disabled = true;
+
+                fetch("/Cart/RemoveItem", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "RequestVerificationToken": token
+                    },
+                    body: `cartItemId=${id}`
+                })
+                .then(r => r.json())
+                .then(res => {
+                    if (res.success) {
+                        tr.remove();
+                        calcTempTotal();
+                        loadMiniCart();
+                    } else {
+                        alert(res.message || "Xóa thất bại");
+                        btn.disabled = false;
+                    }
+                })
+                .catch(() => {
+                    alert("Lỗi kết nối server");
+                    btn.disabled = false;
+                });
+            });
+        });
+
+        /* ================= INIT ================= */
+        calcTempTotal();
+        loadMiniCart();
+    </script>
+}
+
+
+
+
+<style>
+    .text-primary {
+        --bs-text-opacity: 1;
+        color: rgb(253 13 13) !important;
+    }
+    .cart-table {
+        border-collapse: separate;
+        border-spacing: 0 14px;
+    }
+
+        .cart-table thead {
+            display: none;
+        }
+
+        .cart-table tbody tr {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,.08);
+            transition: .25s;
+        }
+
+            .cart-table tbody tr:hover {
+                box-shadow: 0 12px 28px rgba(0,0,0,.12);
+            }
+            /* highlight khi tick */
+            .cart-table tbody tr:has(.item-check:checked) {
+                border: 2px solid #d70018;
+                background: #fff5f5;
+            }
+
+        .cart-table td {
+            border: none !important;
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .cart-table img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            background: #f3f4f6;
+            border-radius: 14px;
+        }
+
+    .item-check {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+    }
+
+    .hover-link {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+        .hover-link:hover {
+            color: #d70018 !important;
+            text-decoration: underline;
+        }
+
+    .price {
+        font-size: 15px;
+    }
+
+    .qty {
+        width: 90px;
+        border-radius: 999px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .remove {
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+    }
+
+    .card.shadow-sm.mt-4 {
+        position: sticky;
+        bottom: 20px;
+        z-index: 5;
+    }
+
+        .card.shadow-sm.mt-4 .card-body {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,.15);
+        }
+
+    #btnCheckout {
+        background: #d70018;
+        border: none;
+        border-radius: 14px;
+    }
+
+        #btnCheckout:hover {
+            background: #b80014;
+        }
+
+        #btnCheckout:disabled {
+            background: #d1d5db !important;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    @@media (max-width: 768px) {
+        .cart-table td
+
+    {
+        padding: 12px;
+    }
+
+    .qty {
+        width: 70px;
+    }
+
+    .hover-link {
+        font-size: 14px;
+    }
+
+    .price {
+        font-size: 14px;
+    }
+
+    }
+</style>

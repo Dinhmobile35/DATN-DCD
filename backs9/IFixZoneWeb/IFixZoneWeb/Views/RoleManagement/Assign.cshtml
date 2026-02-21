@@ -1,0 +1,30 @@
+﻿@model IFixZoneWeb.Models.Entities.User
+@using IFixZoneWeb.Models.Entities
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Phân quyền người dùng";
+}
+
+<h4 class="fw-bold mb-3">
+    <i class="fa-solid fa-shield"></i> Phân quyền cho: @Model.Username
+</h4>
+
+<form method="post">
+
+    @foreach (var r in (List<Role>)ViewBag.Roles)
+    {
+        <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="roleIds"
+                   value="@r.RoleId"
+                   @(Model.Roles.Any(x => x.RoleId == r.RoleId) ? "checked" : "") />
+
+            <label class="form-check-label">@r.RoleName</label>
+        </div>
+    }
+
+    <button class="btn btn-success mt-3">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

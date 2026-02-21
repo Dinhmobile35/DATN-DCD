@@ -1,0 +1,558 @@
+﻿@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - iFixZone</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+@{
+        var today = DateTime.Now;
+        bool isNoel = today.Month == 12 && today.Day >= 15;
+        bool isTet = today.Month == 1 || today.Month == 2;
+
+        var isLoggedIn = User.Identity?.IsAuthenticated ?? false;
+        var displayName = User.FindFirst(ClaimTypes.GivenName)?.Value
+                                            ?? User.Identity?.Name;
+}
+
+<body class="@(isNoel ? "event-noel" : isTet ? "event-tet" : "event-normal")">
+
+    <!-- 🌸 / ❄️ BACKGROUND HIỆU ỨNG -->
+    <div id="season-bg"></div>
+
+
+    <!-- ================= DESKTOP HEADER ================= -->
+    <nav class="navbar ifx-navbar sticky-top d-none d-lg-block">
+        <div class="container d-flex align-items-center gap-3">
+
+            <!-- LOGO -->
+            <a class="navbar-brand d-flex align-items-center gap-2"
+               asp-controller="Home" asp-action="Index">
+
+                <img src="~/images/logo/logo-circle.png"
+                     alt="iFixZone"
+                     class="ifx-logo" />
+
+                <span class="fw-bold">iFixZone</span>
+            </a>
+
+
+            <!-- CATEGORY -->
+            <div class="dropdown">
+                <button class="btn ifx-category-btn" data-bs-toggle="dropdown">
+                    <i class="fa fa-bars me-1"></i> Danh mục
+                </button>
+                <ul class="dropdown-menu">
+                    @await Component.InvokeAsync("CategoryMenu")
+                </ul>
+            </div>
+
+            <form class="ifx-search flex-grow-1 position-relative"
+                  asp-controller="Product" asp-action="Index">
+                <input id="searchInput" name="searchString" placeholder="Bạn cần tìm gì?" autocomplete="off" />
+
+                <div id="searchSuggest" class="search-suggest d-none"></div>
+            </form>
+
+
+
+            <!-- CONTACT -->
+            <a asp-controller="Home" asp-action="Contact" class="ifx-contact">
+                <i class="fa fa-headset"></i> Liên hệ
+            </a>
+
+            <!-- CART -->
+            <div class="ifx-cart" id="cartWrapper">
+                <span class="cart-icon d-flex align-items-center gap-2" id="cartToggle">
+                    <i class="fa fa-cart-shopping"></i>
+                    <span class="cart-text">Giỏ hàng</span>
+                    <span id="cartCount" class="cart-badge">0</span>
+                </span>
+
+                <div class="mini-cart rounded-1" id="miniCart">
+                    <div class="text-center text-muted py-3">Đang tải...</div>
+                </div>
+            </div>
+            <!-- NOTIFICATION -->
+            @if (isLoggedIn)
+            {
+                <div class="dropdown position-relative" id="notiWrapper">
+                    <a class="text-white position-relative"
+                       href="#"
+                       id="notiToggle"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false"
+                       style="text-decoration:none">
+
+                        <i class="fa fa-bell fs-5"></i>
+                        <span id="notiBadge"
+                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                            0
+                        </span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-end shadow"
+                         style="width:340px; max-height:420px; overflow:auto">
+                        <div class="px-3 py-2 fw-semibold border-bottom">
+                            Thông báo
+                        </div>
+
+                        <div id="notiList">
+                            <div class="text-center text-muted py-3">
+                                Đang tải...
+                            </div>
+                        </div>
+
+                        <div class="border-top text-center">
+                            <a asp-controller="Notification"
+                               asp-action="Index"
+                               class="dropdown-item text-primary fw-semibold">
+                                Xem tất cả
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- USER -->
+            @if (isLoggedIn)
+            {
+                <div class="dropdown">
+                    <a class="dropdown-toggle text-white d-flex align-items-center gap-1"
+                       data-bs-toggle="dropdown">
+                        <i class="fa fa-user"></i> @displayName
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                <i class="fa fa-id-card me-2"></i> Hồ sơ
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" asp-controller="Order" asp-action="History">
+                                <i class="fa fa-box me-2"></i> Đơn hàng
+                            </a>
+                        </li>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <a class="dropdown-item text-primary"
+                                   asp-controller="Admin" asp-action="Dashboard">
+                                    <i class="fa fa-gauge-high me-2"></i> Admin Panel
+                                </a>
+                            </li>
+                        }
+
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <a class="dropdown-item text-danger"
+                               asp-controller="Account" asp-action="Logout">
+                                <i class="fa fa-right-from-bracket me-2"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login"
+                   class="ifx-action">
+                    <i class="fa fa-user"></i>
+                    <span>Đăng nhập</span>
+                </a>
+
+            }
+        </div>
+    </nav>
+
+    <!-- ================= MOBILE HEADER ================= -->
+    <div class="ifx-mobile-header d-lg-none">
+        <div class="mobile-top">
+            <button class="mobile-menu-btn" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                <i class="fa fa-bars"></i>
+            </button>
+
+            <span class="mobile-logo">iFixZone</span>
+
+            <a asp-controller="Cart" asp-action="Index" class="mobile-cart">
+                <i class="fa fa-cart-shopping"></i>
+                <span id="cartCountMobile" class="cart-badge">0</span>
+            </a>
+        </div>
+
+        <form asp-controller="Product" asp-action="Index" class="mobile-search">
+            <input name="searchString" placeholder="Bạn cần tìm gì?" />
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+
+    <!-- ================= MOBILE MENU ================= -->
+    <div class="offcanvas offcanvas-start" id="mobileMenu">
+        <div class="offcanvas-header">
+            <h5>Menu</h5>
+            <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <h6>Danh mục</h6>
+            <ul class="list-unstyled">
+                @await Component.InvokeAsync("CategoryMenu")
+            </ul>
+
+            <hr />
+
+            @if (!isLoggedIn)
+            {
+                <a class="btn btn-outline-primary w-100"
+                   asp-controller="Account" asp-action="Login">
+                    Đăng nhập
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-outline-secondary w-100 mb-2"
+                   asp-controller="Account" asp-action="Profile">
+                    Hồ sơ
+                </a>
+
+                <a class="btn btn-outline-secondary w-100 mb-2"
+                   asp-controller="Order" asp-action="History">
+                    Đơn hàng
+                </a>
+
+                <a class="btn btn-outline-danger w-100"
+                   asp-controller="Account" asp-action="Logout">
+                    Đăng xuất
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- ================= CONTENT ================= -->
+    <main class="container my-4">
+        @RenderBody()
+    </main>
+
+    <!-- ================= FOOTER (FULL) ================= -->
+    <footer class="ifx-footer mt-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5 class="fw-bold text-white mb-3">
+                        <i class="fa fa-screwdriver-wrench me-2"></i> iFixZone
+                    </h5>
+                    <p class="footer-desc">
+                        Nền tảng cung cấp linh kiện & dụng cụ sửa chữa điện thoại, laptop.
+                    </p>
+                    <p class="footer-desc">
+                        Phục vụ kỹ thuật viên và sinh viên CNTT.
+                    </p>
+                </div>
+
+                <div class="col-md-2">
+                    <h6 class="footer-title">Liên kết</h6>
+                    <ul class="footer-links">
+                        <li><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                        <li><a asp-controller="Product" asp-action="Index">Sản phẩm</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3">
+                    <h6 class="footer-title">Hỗ trợ</h6>
+                    <ul class="footer-links">
+                        <li>📞 Hotline: 0399355483</li>
+                        <li>✉ Dinhmobile35@gmail.com</li>
+                        <li>🕒 8:00 – 21:00</li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3">
+                    <h6 class="footer-title">Thanh toán</h6>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="pay-badge">COD</span>
+                        <span class="pay-badge"></span>
+                        <span class="pay-badge"></span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="footer-line" />
+
+            <div class="text-center footer-copy">
+                © @DateTime.Now.Year iFixZone — Đồ án tốt nghiệp ASP.NET Core MVC
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ================= GLOBAL MINI CART (DUY NHẤT – FIXED) ================= -->
+    <script>
+        window.loadMiniCart = function () {
+            fetch("/Cart/Mini")
+                .then(r => r.json())
+                .then(res => {
+                    const cartCount = document.getElementById("cartCount");
+                    const cartCountMobile = document.getElementById("cartCountMobile");
+                    const miniCart = document.getElementById("miniCart");
+
+                    if (cartCount) cartCount.innerText = res.quantity || 0;
+                    if (cartCountMobile) cartCountMobile.innerText = res.quantity || 0;
+
+                    if (miniCart) {
+                        miniCart.innerHTML =
+                            res.html || "<div class='text-center py-3'>Giỏ hàng trống</div>";
+                    }
+                });
+        };
+
+        loadMiniCart();
+
+        /* TOGGLE MINI CART */
+        const cartToggle = document.getElementById("cartToggle");
+        const miniCart = document.getElementById("miniCart");
+        const cartWrapper = document.getElementById("cartWrapper");
+
+        if (cartToggle) {
+            cartToggle.addEventListener("click", e => {
+                e.stopPropagation();
+                miniCart.classList.toggle("show");
+            });
+
+            document.addEventListener("click", e => {
+                if (!cartWrapper.contains(e.target)) {
+                    miniCart.classList.remove("show");
+                }
+            });
+        }
+    </script>
+    <script>
+        const input = document.getElementById("searchInput");
+        const box = document.getElementById("searchSuggest");
+
+        let timer = null;
+        let activeIndex = -1;
+        let currentData = [];
+
+        /* ===== INPUT ===== */
+        input.addEventListener("input", () => {
+            clearTimeout(timer);
+            const q = input.value.trim();
+            activeIndex = -1;
+
+            if (q.length < 2) {
+                hideSuggest();
+                return;
+            }
+
+            showSkeleton();
+
+            timer = setTimeout(() => {
+                fetch(`/Search/Suggest?q=${encodeURIComponent(q)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        currentData = data || [];
+                        if (!currentData.length) {
+                            hideSuggest();
+                            return;
+                        }
+                        renderSuggest(currentData, q);
+                    });
+            }, 300);
+        });
+
+        /* ===== FOCUS CONTROL (QUAN TRỌNG NHẤT) ===== */
+        input.addEventListener("focusin", () => {
+            if (currentData.length) {
+                box.classList.remove("d-none");
+            }
+        });
+
+        input.addEventListener("focusout", e => {
+            // Nếu focus chuyển sang dropdown → KHÔNG ẨN
+            if (box.contains(e.relatedTarget)) return;
+            hideSuggest();
+        });
+
+        /* ===== CLICK ITEM ===== */
+        box.addEventListener("mousedown", e => {
+            e.preventDefault(); // giữ focus
+        });
+
+        box.addEventListener("click", e => {
+            const item = e.target.closest(".search-item");
+            if (!item) return;
+            window.location.href = `/Product/Details/${item.dataset.id}`;
+        });
+
+        /* ===== KEYBOARD ===== */
+        input.addEventListener("keydown", e => {
+            if (!currentData.length) return;
+
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                activeIndex = (activeIndex + 1) % currentData.length;
+                renderSuggest(currentData, input.value);
+            }
+
+            if (e.key === "ArrowUp") {
+                e.preventDefault();
+                activeIndex = (activeIndex - 1 + currentData.length) % currentData.length;
+                renderSuggest(currentData, input.value);
+            }
+
+            if (e.key === "Enter") {
+                e.preventDefault();
+                if (activeIndex >= 0) {
+                    window.location.href =
+                        `/Product/Details/${currentData[activeIndex].productId}`;
+                } else {
+                    input.form.submit();
+                }
+            }
+
+            if (e.key === "Escape") {
+                hideSuggest();
+            }
+        });
+
+        /* ===== RENDER ===== */
+        function renderSuggest(data, keyword) {
+            const reg = new RegExp(`(${keyword})`, "gi");
+
+            box.innerHTML = data.map((p, i) => `
+                <div class="search-item ${i === activeIndex ? "active" : ""}"
+                     tabindex="-1"
+                     data-id="${p.productId}">
+                    <img src="/images/products/${p.mainImage ?? "no-image.jpg"}">
+                    <div>
+                        <div class="fw-semibold">
+                            ${p.productName.replace(reg, `<span class="search-highlight">$1</span>`)}
+                        </div>
+                        <div class="text-danger fw-bold">
+                            ${Number(p.price).toLocaleString()}đ
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+
+            box.classList.remove("d-none");
+        }
+
+        /* ===== SKELETON ===== */
+        function showSkeleton() {
+            box.innerHTML = `
+                ${Array(3).fill(0).map(() => `
+                    <div class="search-skeleton">
+                        <div class="img"></div>
+                        <div class="lines">
+                            <div class="line"></div>
+                            <div class="line" style="width:60%"></div>
+                        </div>
+                    </div>
+                `).join("")}
+            `;
+            box.classList.remove("d-none");
+        }
+
+        /* ===== HIDE ===== */
+        function hideSuggest() {
+            box.classList.add("d-none");
+            box.innerHTML = "";
+            currentData = [];
+            activeIndex = -1;
+        }
+    </script>
+    <script>
+        function loadNotifications() {
+            fetch("/Notification/List")
+                .then(r => r.text())
+                .then(html => {
+                    const list = document.getElementById("notiList");
+                    if (list) list.innerHTML = html;
+                });
+        }
+
+        function loadUnreadCount() {
+            fetch("/Notification/UnreadCount")
+                .then(r => r.json())
+                .then(count => {
+                    const badge = document.getElementById("notiBadge");
+                    if (!badge) return;
+
+                    if (count > 0) {
+                        badge.innerText = count;
+                        badge.classList.remove("d-none");
+                    } else {
+                        badge.classList.add("d-none");
+                    }
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadUnreadCount();
+
+            const toggle = document.getElementById("notiToggle");
+            if (toggle) {
+                toggle.addEventListener("click", function () {
+                    loadNotifications();
+                });
+            }
+        });
+    </script>
+    <script>
+        const seasonBg = document.getElementById("season-bg");
+        const bodyClass = document.body.className;
+
+        function spawn(emoji, speed = 400) {
+            const el = document.createElement("span");
+            el.className = "season-particle";
+            el.innerText = emoji;
+            el.style.left = Math.random() * 100 + "vw";
+            el.style.fontSize = (14 + Math.random() * 14) + "px";
+            el.style.animationDuration = (5 + Math.random() * 5) + "s";
+            seasonBg.appendChild(el);
+            setTimeout(() => el.remove(), 10000);
+        }
+
+        function startEffect() {
+            // 🎄 NOEL
+            if (bodyClass.includes("event-noel")) {
+                setInterval(() => spawn("❄️"), 300);
+                return;
+            }
+
+            // 🌸 TẾT
+            if (bodyClass.includes("event-tet")) {
+                setInterval(() => spawn("🌸"), 350);
+                return;
+            }
+
+            // 🌍 4 MÙA
+            const month = new Date().getMonth() + 1;
+            let emoji = "✨";
+
+            if (month >= 3 && month <= 5) emoji = "🌸";
+            else if (month >= 6 && month <= 8) emoji = "✨";
+            else if (month >= 9 && month <= 11) emoji = "🍂";
+            else emoji = "❄️";
+
+            setInterval(() => spawn(emoji), 450);
+        }
+
+        startEffect();
+    </script>
+
+
+    @await RenderSectionAsync("Scripts", false)
+</body>
+</html>

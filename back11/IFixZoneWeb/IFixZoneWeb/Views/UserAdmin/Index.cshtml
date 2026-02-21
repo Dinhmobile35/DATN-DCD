@@ -1,0 +1,203 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.User>
+@{
+    Layout = "_AdminLayout";
+}
+
+<h4 class="fw-bold mb-3">Quản lý người dùng</h4>
+
+<a asp-action="Edit" class="btn btn-success mb-3">
+    <i class="fa fa-plus me-1"></i> Thêm người dùng
+</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle user-admin-table">
+        <thead>
+            <tr>
+                <th>Tài khoản</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Vai trò</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th width="200">Thao tác</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.Username</td>
+                    <td>@u.FullName</td>
+                    <td>@u.Email</td>
+                    <td>@u.Phone</td>
+                    <td>
+                        <span class="badge badge-role">
+                            @string.Join(", ", u.Roles.Select(r => r.RoleName))
+                        </span>
+                    </td>
+                    <td>
+                        @if (u.IsActive == true)
+                        {
+                            <span class="badge badge-active">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-lock">Bị khóa</span>
+                        }
+                    </td>
+                    <td>
+                        @(u.CreatedAt?.ToString("dd/MM/yyyy") ?? "—")
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="Edit"
+                           asp-route-id="@u.UserId"
+                           class="btn btn-warning btn-sm">
+                            Sửa
+                        </a>
+
+                        <form asp-action="Delete"
+                              method="post"
+                              class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@u.UserId" />
+                            <button class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Khóa người dùng này?')">
+                                Khóa
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= CSS ================= -->
+<style>
+    /* ===============================
+           USER ADMIN LIST – FINAL UI
+           =============================== */
+
+    .user-admin-table {
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 24px rgba(0,0,0,.04);
+    }
+
+        .user-admin-table thead th {
+            background: #f9fafb;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: #374151;
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px;
+        }
+
+        .user-admin-table tbody td {
+            font-size: 14px;
+            color: #111827;
+            vertical-align: middle;
+            padding: 10px 12px;
+        }
+
+        .user-admin-table tbody tr {
+            transition: background .2s ease;
+        }
+
+            .user-admin-table tbody tr:hover {
+                background: #f9fafb;
+            }
+
+    /* ===== BADGES ===== */
+    .badge {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 999px;
+    }
+
+    .badge-role {
+        background: #6b7280;
+        color: #fff;
+    }
+
+    .badge-active {
+        background: #16a34a;
+        color: #fff;
+    }
+
+    .badge-lock {
+        background: #dc2626;
+        color: #fff;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 14px;
+    }
+
+    .btn-success {
+        background: #16a34a;
+        border-color: #16a34a;
+        box-shadow: 0 4px 12px rgba(22,163,74,.25);
+    }
+
+        .btn-success:hover {
+            background: #15803d;
+            border-color: #15803d;
+        }
+
+    .btn-warning {
+        background: #f59e0b;
+        border-color: #f59e0b;
+        color: #111;
+    }
+
+        .btn-warning:hover {
+            background: #d97706;
+            border-color: #d97706;
+            color: #fff;
+        }
+
+    .btn-danger {
+        background: #dc2626;
+        border-color: #dc2626;
+    }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 768px) {
+        .user-admin-table thead
+
+    {
+        display: none;
+    }
+
+    .user-admin-table tbody tr {
+        display: block;
+        margin-bottom: 14px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .user-admin-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+    }
+
+    }
+</style>

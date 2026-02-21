@@ -1,0 +1,177 @@
+﻿@using IFixZoneWeb.Models.Entities
+@model IEnumerable<IFixZoneWeb.Models.Entities.Product>
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    var products = Model.ToList();
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">Danh sách sản phẩm</h2>
+
+    <!-- ===== SORT ONLY ===== -->
+    <div class="sort-wrapper mb-4">
+        <div class="sort-title">Sắp xếp theo giá</div>
+        <div class="sort-box">
+            <button type="button" class="sort-btn" data-sort="low">Giá tăng dần ↑</button>
+            <button type="button" class="sort-btn" data-sort="high">Giá giảm dần ↓</button>
+        </div>
+    </div>
+
+    <!-- ===== PRODUCT GRID ===== -->
+    <div class="product-grid" id="productGrid">
+        @foreach (var p in products)
+        {
+            <a class="product-item"
+               asp-controller="Product"
+               asp-action="Details"
+               asp-route-id="@p.ProductId"
+               data-price="@p.Price">
+                <!-- DÒNG QUAN TRỌNG: PHẢI CÓ data-price -->
+                <img src="/images/products/@(p.MainImage ?? "no-image.jpg")" />
+                <div class="product-name">@p.ProductName</div>
+                <div class="price">@p.Price.ToString("N0")đ</div>
+            </a>
+        }
+    </div>
+</div>
+
+<!-- ================= CSS ================= -->
+<style>
+    .sort-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .sort-title {
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .sort-box {
+        display: flex;
+        gap: 10px;
+    }
+
+    .sort-btn {
+        padding: 10px 16px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .sort-btn:hover {
+            background: #fee2e2;
+            color: #d70018;
+        }
+
+        .sort-btn.active {
+            background: #d70018;
+            color: #fff;
+            border-color: #d70018;
+        }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+
+    .product-item {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 14px;
+        text-decoration: none;
+        color: #111;
+        transition: .25s;
+    }
+
+        .product-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 36px rgba(0,0,0,.12);
+        }
+
+        .product-item img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
+
+    .product-name {
+        font-size: 14px;
+        font-weight: 600;
+        min-height: 38px;
+        margin: 8px 0;
+    }
+
+    .price {
+        font-size: 16px;
+        font-weight: 800;
+        color: #d70018;
+    }
+
+    /* Responsive - CÚ PHÁP ĐÚNG 100% */
+    @@media (max-width: 1200px) {
+        .product-grid
+
+    {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    }
+    @@media (max-width: 768px) {
+        .product-grid
+
+    {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    }
+    @@media (max-width: 576px) {
+        .product-grid
+
+    {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    }
+</style>
+
+<!-- ================= JS (SORT ONLY) ================= -->
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const grid = document.getElementById("productGrid");
+            const sortButtons = document.querySelectorAll(".sort-btn");
+            let currentSort = "";
+
+            function applySort() {
+                const items = Array.from(grid.querySelectorAll(".product-item"));
+                items.sort((a, b) => {
+                    const pa = parseFloat(a.dataset.price) || 0;
+                    const pb = parseFloat(b.dataset.price) || 0;
+                    return currentSort === "low" ? pa - pb : pb - pa;
+                });
+                items.forEach(item => grid.appendChild(item));
+            }
+
+            sortButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    // Xóa active cũ
+                    sortButtons.forEach(b => b.classList.remove("active"));
+                    // Thêm active mới
+                    btn.classList.add("active");
+                    // Lấy kiểu sort
+                    currentSort = btn.dataset.sort;
+                    // Áp dụng sort
+                    applySort();
+                });
+            });
+        });
+    </script>
+}

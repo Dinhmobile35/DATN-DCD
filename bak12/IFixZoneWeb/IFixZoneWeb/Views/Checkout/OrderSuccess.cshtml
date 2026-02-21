@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container py-5 text-center">
+    <h2 class="text-success">Cảm ơn bạn!</h2>
+    <p class="lead">Đơn hàng của bạn đã được đặt thành công.</p>
+    <p>@TempData["Success"]</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Quay về trang chủ</a>
+</div>

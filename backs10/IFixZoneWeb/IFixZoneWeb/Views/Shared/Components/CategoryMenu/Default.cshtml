@@ -1,0 +1,20 @@
+﻿@model List<IFixZoneWeb.ViewComponents.CategoryNode>
+
+@if (Model == null || !Model.Any())
+{
+    <li class="dropdown-item text-muted px-3">
+        Không có danh mục
+    </li>
+}
+else
+{
+    <ul class="dropdown-menu ifx-category-root show">
+        @foreach (var node in Model)
+        {
+            @await Html.PartialAsync(
+            "Components/CategoryMenu/_CategoryNode",
+        node
+        )
+        }
+    </ul>
+}

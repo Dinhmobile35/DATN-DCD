@@ -1,0 +1,32 @@
+﻿@model List<IFixZoneWeb.Models.Entities.Notification>
+
+@if (!Model.Any())
+{
+    <div class="text-center text-muted py-3">
+        Không có thông báo
+    </div>
+}
+else
+{
+    foreach (var n in Model)
+    {
+        <div class="dropdown-item d-flex justify-content-between align-items-start
+                            @(n.IsRead == false ? "fw-semibold" : "")">
+            <div>
+                <div>@n.Content</div>
+                <small class="text-muted">
+                    @n.CreatedAt?.ToString("dd/MM HH:mm")
+                </small>
+            </div>
+
+            @if (n.IsRead == false)
+            {
+                <form asp-action="MarkAsRead" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@n.NotificationId" />
+                    <button class="btn btn-sm btn-link">✓</button>
+                </form>
+            }
+        </div>
+    }
+}

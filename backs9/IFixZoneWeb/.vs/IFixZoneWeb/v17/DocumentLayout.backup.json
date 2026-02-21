@@ -1,0 +1,89 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\DATN\\IFixZoneWeb\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\cart\\_minicart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\cart\\_minicart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-26T13:47:07.351Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAFYCAAAAAAAAAAAuwG0CAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-26T13:46:03.123Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAADgBAAAAAAAAAAAAAEkAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-26T11:58:42.27Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_MiniCart.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Cart\\_MiniCart.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Cart\\_MiniCart.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Cart\\_MiniCart.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Cart\\_MiniCart.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-15T16:32:25.501Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

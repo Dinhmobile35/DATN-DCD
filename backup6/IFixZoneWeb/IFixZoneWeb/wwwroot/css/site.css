@@ -1,0 +1,233 @@
+﻿/* ================= RESET NHẸ ================= */
+body {
+    background: #f5f7fa;
+}
+
+/* ================= HEADER ================= */
+.ifx-navbar {
+    background: #d70018;
+    padding: 10px 0;
+}
+
+.navbar-brand {
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.ifx-category-btn {
+    background: #b80014;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+    .ifx-category-btn:hover {
+        background: #a50012;
+    }
+
+.ifx-search {
+    position: relative;
+}
+
+    .ifx-search input {
+        width: 100%;
+        height: 38px;
+        border-radius: 8px;
+        border: none;
+        padding: 0 42px 0 12px;
+    }
+
+    .ifx-search button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 42px;
+        height: 38px;
+        border: none;
+        background: transparent;
+        color: #444;
+    }
+
+.ifx-contact {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ================= CART ================= */
+.ifx-cart {
+    position: relative;
+}
+
+.cart-icon {
+    cursor: pointer;
+    color: #fff;
+    position: relative;
+}
+
+.cart-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MINI CART */
+.mini-cart {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 130%;
+    width: 320px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    z-index: 9999;
+}
+
+    .mini-cart.show {
+        display: block;
+    }
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #fd0d0d;
+    --bs-btn-border-color: #0d6efd;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #0b5ed7;
+    --bs-btn-hover-border-color: #0a58ca;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #0a58ca;
+    --bs-btn-active-border-color: #0a53be;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #0d6efd;
+    --bs-btn-disabled-border-color: #0d6efd;
+}
+/* ================= MOBILE HEADER ================= */
+.ifx-mobile-header {
+    background: #d70018;
+    padding: 10px;
+}
+
+.mobile-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mobile-menu-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+}
+
+.mobile-logo {
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.mobile-cart {
+    color: #fff;
+    position: relative;
+}
+
+.mobile-search {
+    margin-top: 8px;
+    position: relative;
+}
+
+    .mobile-search input {
+        width: 100%;
+        height: 36px;
+        border-radius: 8px;
+        border: none;
+        padding: 0 40px 0 10px;
+    }
+
+    .mobile-search button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 40px;
+        height: 36px;
+        border: none;
+        background: transparent;
+    }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 991px) {
+    .cart-text {
+        display: none;
+    }
+}
+
+/* ================= FOOTER ================= */
+.ifx-footer {
+    background: #111827;
+    color: #d1d5db;
+}
+
+.footer-title {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.footer-desc {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+
+    .footer-links a {
+        color: #d1d5db;
+        text-decoration: none;
+    }
+
+        .footer-links a:hover {
+            color: #facc15;
+        }
+
+.pay-badge {
+    background: #1f2937;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.footer-line {
+    border-color: #374151;
+    margin: 24px 0;
+}
+
+.footer-copy {
+    font-size: 13px;
+    color: #9ca3af;
+}

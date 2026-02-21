@@ -1,0 +1,105 @@
+﻿@model IFixZoneWeb.Models.Entities.Category
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Danh mục";
+    var parents = ViewBag.ParentCategories as IEnumerable<IFixZoneWeb.Models.Entities.Category>;
+    var path = ViewBag.CategoryPath as List<IFixZoneWeb.Models.Entities.Category>;
+}
+
+<h4 class="fw-bold mb-4">
+    <i class="fa-solid fa-folder-tree me-2 text-primary"></i>
+    @(Model.CategoryId == 0 ? "Thêm danh mục" : "Sửa danh mục")
+</h4>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+
+        <!-- 🌳 BREADCRUMB DANH MỤC -->
+        @if (path != null && path.Any())
+        {
+            <div class="mb-4">
+                <label class="form-label fw-semibold text-muted">
+                    🌳 Cây danh mục
+                </label>
+
+                <div class="alert alert-light border d-flex align-items-center flex-wrap gap-2">
+                    @foreach (var c in path)
+                    {
+                        <span class="badge bg-secondary bg-opacity-10 text-dark px-3 py-2">
+                            📁 @c.CategoryName
+                        </span>
+
+                        @if (c != path.Last())
+                        {
+                            <span class="text-muted fw-bold">›</span>
+                        }
+                    }
+                </div>
+            </div>
+        }
+
+        <form method="post">
+            <input type="hidden" asp-for="CategoryId" />
+
+            <!-- TÊN DANH MỤC -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">
+                    Tên danh mục <span class="text-danger">*</span>
+                </label>
+
+                <input asp-for="CategoryName"
+                       class="form-control form-control-lg"
+                       placeholder="VD: Linh kiện điện thoại, iPhone, iPhone 13..." />
+
+                <span class="text-danger small"
+                      asp-validation-for="CategoryName"></span>
+            </div>
+
+            <!-- DANH MỤC CHA -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">
+                    Danh mục cha
+                </label>
+
+                <select asp-for="ParentId"
+                        class="form-select form-select-lg">
+
+                    <option value="">🌱 Danh mục gốc</option>
+
+                    @foreach (var c in parents)
+                    {
+                        <option value="@c.CategoryId"
+                                selected="@(Model.ParentId == c.CategoryId)">
+                            📁 @c.CategoryName
+                        </option>
+                    }
+                </select>
+
+                <small class="text-muted">
+                    • Chọn danh mục cha nếu đây là danh mục con
+                    <br />
+                    • Không thể chọn chính nó làm cha
+                </small>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary px-4">
+                    Hủy
+                </a>
+
+                <button type="submit"
+                        class="btn btn-success px-4">
+                    <i class="fa-solid fa-save me-1"></i> Lưu
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

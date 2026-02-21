@@ -1,0 +1,581 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\DATN\\IFixZoneWeb\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\product\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\checkoutcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\checkoutcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\product\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\product\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\shared\\_stafflayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\shared\\_stafflayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\checkout\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\checkout\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\admin\\orderadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\admin\\orderadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\orderadmin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\orderadmin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\account\\editprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\account\\editprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\cart\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\cart\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\categoryadmin\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\categoryadmin\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\categoryadmin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\categoryadmin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\admin\\categoryadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\admin\\categoryadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\orderadmin\\print.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\orderadmin\\print.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\orderadmin\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\orderadmin\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\admin\\reviewadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\admin\\reviewadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\reviewadmin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\reviewadmin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\models\\entities\\review.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\models\\entities\\review.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\orderstaff\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\orderstaff\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\orderstaff\\print.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\orderstaff\\print.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\views\\orderstaff\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\views\\orderstaff\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\staff\\orderstaffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\staff\\orderstaffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|c:\\datn\\ifixzoneweb\\ifixzoneweb\\controllers\\admin\\productadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}|IFixZoneWeb\\IFixZoneWeb.csproj|solutionrelative:ifixzoneweb\\controllers\\admin\\productadmincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Contact.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Home\\Contact.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Home\\Contact.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Home\\Contact.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Home\\Contact.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T18:59:16.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Product\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Product\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Product\\Index.cshtml*",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Product\\Index.cshtml*",
+              "ViewState": "AgIAAJEAAAAAAAAAAAAwwKoAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T18:28:55.84Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "_StaffLayout.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_StaffLayout.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Shared\\_StaffLayout.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_StaffLayout.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Shared\\_StaffLayout.cshtml",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAwwF0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:50:51.482Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "OrderAdminController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\OrderAdminController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\Admin\\OrderAdminController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\OrderAdminController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\Admin\\OrderAdminController.cs",
+              "ViewState": "AgIAAKAAAAAAAAAAAAAswL4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T13:48:15.844Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Account\\Login.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T17:12:20.6Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\ProductController.cs",
+              "ViewState": "AgIAAKoAAAAAAAAAAAAswMgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T18:31:55.974Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAACYEAAAAAAAAAAAwwEUEAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T15:26:38.424Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "_AdminLayout.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Shared\\_AdminLayout.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Shared\\_AdminLayout.cshtml",
+              "ViewState": "AgIAACsAAAAAAAAAAAAgwDsAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:50:49.848Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CategoryController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\CategoryController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\CategoryController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\CategoryController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\CategoryController.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAwwFkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T18:47:47.639Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "OrderController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\OrderController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\OrderController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\OrderController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\OrderController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T18:47:46.21Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CheckoutController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\CheckoutController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\CheckoutController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\CheckoutController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\CheckoutController.cs",
+              "ViewState": "AgIAABEBAAAAAAAAAAAYwCABAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T17:56:00.127Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "CategoryAdminController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\CategoryAdminController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\Admin\\CategoryAdminController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\CategoryAdminController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\Admin\\CategoryAdminController.cs",
+              "ViewState": "AgIAAMUAAAAAAAAAAAAowNkAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T14:03:32.427Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAB4CAAAAAAAAAAAowCkCAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T17:28:08.777Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Checkout\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Checkout\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Checkout\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Checkout\\Index.cshtml",
+              "ViewState": "AgIAALAAAAAAAAAAAAAowKcAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T18:00:58.085Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Product\\Details.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Product\\Details.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Product\\Details.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Product\\Details.cshtml",
+              "ViewState": "AgIAAGUBAAAAAAAAAAAwwHUBAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T16:15:45.77Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "IFixZoneWeb\\wwwroot\\css\\site.css",
+              "ViewState": "AgIAABsCAAAAAAAAAAAAAC0CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-02-05T17:28:20.84Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Account\\Register.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAwwL8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T17:14:56.541Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "CartController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\CartController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\CartController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\CartController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\CartController.cs",
+              "ViewState": "AgIAAHoAAAAAAAAAAAAowJcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T17:17:21.728Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderAdmin\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\OrderAdmin\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderAdmin\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\OrderAdmin\\Index.cshtml",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAowIgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:57:27.092Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Cart\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Cart\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Cart\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Cart\\Index.cshtml",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAAAIwAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T17:17:40.996Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "EditProfile.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Account\\EditProfile.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\Account\\EditProfile.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\Account\\EditProfile.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\Account\\EditProfile.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T17:23:59.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "OrderStaffController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Staff\\OrderStaffController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\Staff\\OrderStaffController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Staff\\OrderStaffController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\Staff\\OrderStaffController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABUAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T13:50:25.935Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderAdmin\\Details.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\OrderAdmin\\Details.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderAdmin\\Details.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\OrderAdmin\\Details.cshtml",
+              "ViewState": "AgIAAJcAAAAAAAAAAAAwwKkAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:57:27.854Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\CategoryAdmin\\Edit.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\CategoryAdmin\\Edit.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\CategoryAdmin\\Edit.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\CategoryAdmin\\Edit.cshtml",
+              "ViewState": "AgIAADUAAAAAAAAAAAAgwEUAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T14:17:35.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\CategoryAdmin\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\CategoryAdmin\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\CategoryAdmin\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\CategoryAdmin\\Index.cshtml",
+              "ViewState": "AgIAAG0AAAAAAAAAAAAwwIEAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T14:17:36.184Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "Review.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Models\\Entities\\Review.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Models\\Entities\\Review.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Models\\Entities\\Review.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Models\\Entities\\Review.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T14:08:04.722Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Print.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderAdmin\\Print.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\OrderAdmin\\Print.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderAdmin\\Print.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\OrderAdmin\\Print.cshtml",
+              "ViewState": "AgIAAFABAAAAAAAAAAAowG0BAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:57:33.542Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "ReviewAdminController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\ReviewAdminController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\Admin\\ReviewAdminController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\ReviewAdminController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\Admin\\ReviewAdminController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T14:10:17.22Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\ReviewAdmin\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\ReviewAdmin\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\ReviewAdmin\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\ReviewAdmin\\Index.cshtml",
+              "ViewState": "AgIAAIIAAAAAAAAAAAAwwJQAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T14:12:29.357Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderStaff\\Index.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\OrderStaff\\Index.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderStaff\\Index.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\OrderStaff\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:54:39.432Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderStaff\\Details.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\OrderStaff\\Details.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderStaff\\Details.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\OrderStaff\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:56:09.39Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Print.cshtml",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderStaff\\Print.cshtml",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Views\\OrderStaff\\Print.cshtml",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Views\\OrderStaff\\Print.cshtml",
+              "RelativeToolTip": "IFixZoneWeb\\Views\\OrderStaff\\Print.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-05T13:56:32.535Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "ProductAdminController.cs",
+              "DocumentMoniker": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\ProductAdminController.cs",
+              "RelativeDocumentMoniker": "IFixZoneWeb\\Controllers\\Admin\\ProductAdminController.cs",
+              "ToolTip": "C:\\DATN\\IFixZoneWeb\\IFixZoneWeb\\Controllers\\Admin\\ProductAdminController.cs",
+              "RelativeToolTip": "IFixZoneWeb\\Controllers\\Admin\\ProductAdminController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T13:48:14.012Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

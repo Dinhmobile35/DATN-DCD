@@ -1,0 +1,20 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.Category>
+
+@if (!Model.Any())
+{
+    <li class="dropdown-item text-muted">Không có danh mục</li>
+}
+else
+{
+    foreach (var c in Model)
+    {
+        <li>
+            <a class="dropdown-item"
+               asp-controller="Product"
+               asp-action="Index"
+               asp-route-categoryId="@c.CategoryId">
+                @c.CategoryName
+            </a>
+        </li>
+    }
+}

@@ -1,0 +1,42 @@
+﻿@model IFixZoneWeb.Models.Entities.Cart
+
+@if (Model.CartItems == null || !Model.CartItems.Any())
+{
+    <div class="text-center text-muted py-2">
+        Giỏ hàng trống
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        <ul class="list-unstyled mb-2">
+            @foreach (var item in Model.CartItems.Take(5))
+            {
+                <li class="d-flex align-items-center mb-2">
+                    <img src="~/images/products/@(item.Product.MainImage ?? "no-image.jpg")"
+                         width="40" height="40"
+                         class="rounded border me-2" />
+
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold" style="font-size:13px">
+                            @item.Product.ProductName
+                        </div>
+                        <small class="text-muted">
+                            Số Lượng: @item.Quantity × @item.Product.Price.ToString("N0") đ
+                        </small>
+                    </div>
+                </li>
+            }
+        </ul>
+
+        <div class="border-top pt-2 text-end fw-bold">
+            Tổng:
+            @Model.CartItems.Sum(x => x.Quantity * x.Product.Price).ToString("N0") đ
+        </div>
+    </div>
+
+    <a asp-controller="Cart" asp-action="Index"
+       class="btn btn-danger btn-sm w-100 mt-2">
+        Xem giỏ hàng
+    </a>
+}

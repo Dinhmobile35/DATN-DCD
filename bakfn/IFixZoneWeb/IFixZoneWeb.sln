@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36811.4 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFixZoneWeb", "IFixZoneWeb\IFixZoneWeb.csproj", "{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34177B5C-6B59-4FB9-B0ED-2776D5EE3BBA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35745490-9E54-422A-A4A7-750EA294FE43}
+	EndGlobalSection
+EndGlobal

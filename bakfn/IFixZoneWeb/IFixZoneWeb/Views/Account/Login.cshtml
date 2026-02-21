@@ -1,0 +1,144 @@
+﻿@model IFixZoneWeb.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+
+        <h3 class="text-center mb-4 fw-bold text-primary">
+            <i class="fa-solid fa-user-lock me-2"></i> Đăng nhập iFixZone
+        </h3>
+
+        <!-- THÔNG BÁO LỖI -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <i class="fa-solid fa-circle-exclamation me-1"></i>
+                @Html.ValidationSummary(false)
+            </div>
+        }
+
+        <!-- ĐĂNG KÝ THÀNH CÔNG -->
+        @if (TempData["RegisterSuccess"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fa-solid fa-circle-check me-1"></i>
+                @TempData["RegisterSuccess"]
+            </div>
+        }
+
+        <form asp-action="Login"
+              method="post"
+              class="card p-4 shadow-sm rounded-4">
+
+            @Html.AntiForgeryToken()
+
+            <!-- RETURN URL -->
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+            <!-- USERNAME -->
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label fw-semibold">
+                    <i class="fa-solid fa-user me-1"></i> Tên đăng nhập
+                </label>
+                <input asp-for="Username"
+                       class="form-control"
+                       autocomplete="username"
+                       autofocus />
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <!-- PASSWORD + TOGGLE -->
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-semibold">
+                    <i class="fa-solid fa-lock me-1"></i> Mật khẩu
+                </label>
+
+                <div class="input-group password-wrapper">
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           id="passwordInput"
+                           autocomplete="current-password" />
+
+                    <span class="input-group-text toggle-password"
+                          onclick="togglePassword()">
+                        <i class="fa-solid fa-eye" id="toggleIcon"></i>
+                    </span>
+                </div>
+
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <!-- SUBMIT -->
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2">
+                <i class="fa-solid fa-right-to-bracket me-1"></i> Đăng nhập
+            </button>
+        </form>
+
+        <p class="text-center mt-3 mb-0">
+            Chưa có tài khoản?
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="fw-bold text-success text-decoration-none">
+                Đăng ký ngay
+            </a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("passwordInput");
+            const icon = document.getElementById("toggleIcon");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        // Tự động ẩn lại khi submit
+        document.querySelector("form")?.addEventListener("submit", () => {
+            const input = document.getElementById("passwordInput");
+            const icon = document.getElementById("toggleIcon");
+
+            if (input && input.type === "text") {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+    </script>
+}
+
+<style>
+    /* ===== PASSWORD TOGGLE ===== */
+    .password-wrapper .form-control {
+        border-right: none;
+    }
+
+    .password-wrapper .input-group-text {
+        background: #fff;
+        cursor: pointer;
+        border-left: none;
+    }
+
+    .toggle-password i {
+        color: #6b7280;
+    }
+
+    .toggle-password:hover i {
+        color: #d70018;
+    }
+</style>

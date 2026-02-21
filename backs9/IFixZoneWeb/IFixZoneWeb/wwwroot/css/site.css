@@ -1,0 +1,331 @@
+﻿/* ================= ROOT ================= */
+:root {
+    --ifx-red: #d70018;
+    --ifx-red-dark: #b80014;
+    --ifx-red-soft: #fee2e2;
+    --ifx-white: #ffffff;
+    --ifx-text: #111827;
+    --ifx-muted: #6b7280;
+    --ifx-border: #e5e7eb;
+    --ifx-yellow: #facc15;
+}
+
+/* ================= RESET ================= */
+body {
+    background: #f5f7fa;
+    color: var(--ifx-text);
+}
+
+/* ================= HEADER ================= */
+.ifx-navbar {
+    background: linear-gradient(90deg, var(--ifx-red), var(--ifx-red-dark));
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 9990;
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+
+    .ifx-navbar,
+    .ifx-navbar .container {
+        overflow: visible !important;
+    }
+
+.navbar-brand {
+    color: #fff !important;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: .3px;
+}
+
+/* ================= LOGO ================= */
+.ifx-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+@media (max-width:1200px) {
+    .ifx-logo {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* ================= HEADER BUTTON – UNIFY STYLE ================= */
+/* Áp dụng cho: Danh mục – Liên hệ – Giỏ hàng – Đăng nhập – User */
+.ifx-category-btn,
+.ifx-action,
+.ifx-contact,
+.ifx-cart > span,
+.navbar .dropdown-toggle,
+.navbar a.text-white {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    color: #fff !important;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .25s ease;
+}
+
+    /* Icon đồng bộ */
+    .ifx-category-btn i,
+    .ifx-action i,
+    .ifx-contact i,
+    .ifx-cart i,
+    .navbar .dropdown-toggle i {
+        font-size: 15px;
+        color: #fff;
+        transition: .25s;
+    }
+
+    /* Hover giống hệt nút Danh mục */
+    .ifx-category-btn:hover,
+    .ifx-action:hover,
+    .ifx-contact:hover,
+    .ifx-cart > span:hover,
+    .navbar .dropdown-toggle:hover,
+    .navbar a.text-white:hover {
+        background: #fff;
+        color: var(--ifx-red) !important;
+        transform: translateY(-1px);
+    }
+
+        /* Icon đổi sang đỏ khi hover */
+        .ifx-category-btn:hover i,
+        .ifx-action:hover i,
+        .ifx-contact:hover i,
+        .ifx-cart:hover i,
+        .navbar .dropdown-toggle:hover i {
+            color: var(--ifx-red);
+        }
+
+/* ================= SEARCH ================= */
+.ifx-search {
+    position: relative;
+    z-index: 9999;
+}
+
+    .ifx-search input {
+        width: 100%;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        padding: 0 42px 0 14px;
+        font-size: 14px;
+    }
+
+        .ifx-search input::placeholder {
+            color: var(--ifx-muted);
+        }
+
+        .ifx-search input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(215,0,24,.25);
+        }
+
+/* ================= SEARCH SUGGEST ================= */
+.search-suggest {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.25);
+    z-index: 99999;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.search-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+    .search-item img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+    }
+
+    .search-item:hover,
+    .search-item.active {
+        background: var(--ifx-red-soft);
+    }
+
+.search-highlight {
+    color: var(--ifx-red);
+    font-weight: 700;
+}
+
+/* ================= CART ================= */
+.ifx-cart {
+    position: relative;
+}
+
+.cart-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 3px;
+   
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+}
+
+.ifx-cart:hover .cart-badge {
+    transform: scale(1.15);
+}
+
+/* ================= MINI CART ================= */
+.mini-cart {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 130%;
+    width: 320px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    z-index: 9999;
+}
+
+    .mini-cart.show {
+        display: block;
+    }
+
+/* ================= USER DROPDOWN ================= */
+.navbar .dropdown-menu {
+    border-radius: 14px;
+    border: none;
+    padding: 6px 0;
+    box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    min-width: 220px;
+}
+
+    .navbar .dropdown-menu .dropdown-item {
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: .2s;
+    }
+
+        .navbar .dropdown-menu .dropdown-item i {
+            width: 20px;
+        }
+
+        .navbar .dropdown-menu .dropdown-item:hover {
+            background: var(--ifx-red-soft);
+            color: var(--ifx-red);
+        }
+
+/* ================= MOBILE HEADER ================= */
+.ifx-mobile-header {
+    background: var(--ifx-red);
+    padding: 10px;
+}
+
+.mobile-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mobile-menu-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+}
+
+.mobile-logo {
+    color: #fff;
+    font-weight: 800;
+    font-size: 18px;
+}
+
+.mobile-cart {
+    color: #fff;
+    position: relative;
+}
+
+/* ================= FOOTER ================= */
+.ifx-footer {
+    background: #111827;
+    color: #d1d5db;
+}
+
+.footer-title {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.footer-desc {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+
+    .footer-links a {
+        color: #d1d5db;
+        text-decoration: none;
+    }
+
+        .footer-links a:hover {
+            color: var(--ifx-yellow);
+        }
+
+.pay-badge {
+    background: #1f2937;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.footer-line {
+    border-color: #374151;
+    margin: 24px 0;
+}
+
+.footer-copy {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:991px) {
+    .cart-text {
+        display: none;
+    }
+}

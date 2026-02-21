@@ -1,0 +1,882 @@
+﻿@using IFixZoneWeb.Models.Entities
+@{
+    ViewData["Title"] = "Trang chủ";
+
+    var categories = ViewBag.Categories as List<Category> ?? new();
+    var newProducts = ViewBag.NewProducts as List<Product> ?? new();
+    var recommended = ViewBag.Recommended as List<Product> ?? new();
+    var featured = ViewBag.FeaturedProducts as List<Product> ?? new();
+    var allProducts = ViewBag.AllProducts as List<Product> ?? new();
+
+    // =========================
+    // 📂 DANH MỤC CHA (ROOT)
+    // =========================
+    var phoneCategory = categories.FirstOrDefault(c =>
+        c.ParentId == null &&
+        c.CategoryName.Contains("điện thoại", StringComparison.OrdinalIgnoreCase));
+
+    var laptopCategory = categories.FirstOrDefault(c =>
+        c.ParentId == null &&
+        c.CategoryName.Contains("laptop", StringComparison.OrdinalIgnoreCase));
+
+    var toolCategory = categories.FirstOrDefault(c =>
+        c.ParentId == null &&
+        c.CategoryName.Contains("dụng", StringComparison.OrdinalIgnoreCase));
+
+    int phoneCatId = phoneCategory?.CategoryId ?? 0;
+    int laptopCatId = laptopCategory?.CategoryId ?? 0;
+    int toolCatId = toolCategory?.CategoryId ?? 0;
+}
+
+
+
+<!-- ===== SIDEBAR + BANNER ===== -->
+<div class="top-wrapper">
+    <aside class="sidebar d-none d-lg-block">
+        <ul class="category-menu">
+            @foreach (var c in categories.Where(x => x.ParentId == null))
+            {
+                <li>
+                    <a asp-controller="Category"
+                       asp-action="Index"
+                       asp-route-id="@c.CategoryId">
+
+                        <i class="fa fa-box"></i>
+                        <span>@c.CategoryName</span>
+                        <i class="fa fa-angle-right arrow"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </aside>
+
+    <div class="banner-grid">
+        <div class="banner-main">
+            <div id="homeCarousel"
+                 class="carousel slide"
+                 data-bs-ride="carousel"
+                 data-bs-interval="4000">
+
+                <!-- DOT INDICATORS -->
+                <div class="carousel-indicators">
+                    <button type="button"
+                            data-bs-target="#homeCarousel"
+                            data-bs-slide-to="0"
+                            class="active"
+                            aria-current="true"
+                            aria-label="Slide 1"></button>
+
+                    <button type="button"
+                            data-bs-target="#homeCarousel"
+                            data-bs-slide-to="1"
+                            aria-label="Slide 2"></button>
+
+                    <button type="button"
+                            data-bs-target="#homeCarousel"
+                            data-bs-slide-to="2"
+                            aria-label="Slide 3"></button>
+                </div>
+
+                <!-- SLIDES -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="/images/banner/slide1.jpg" class="d-block w-100">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/images/banner/slide2.jpg" class="d-block w-100">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/images/banner/slide3.jpg" class="d-block w-100">
+                    </div>
+                </div>
+
+                <!-- PREV BUTTON -->
+                <button class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#homeCarousel"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+
+                <!-- NEXT BUTTON -->
+                <button class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#homeCarousel"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="banner-side d-none d-md-flex flex-column gap-2">
+            <img src="/images/banner/side1.jpg">
+            <img src="/images/banner/side2.jpg">
+            <img src="/images/banner/side1.jpg">
+            <img src="/images/banner/side2.jpg">
+            <img src="/images/banner/side1.jpg">
+        </div>
+    </div>
+</div>
+
+
+<!-- ===== SẢN PHẨM NỔI BẬT ===== -->
+@if (featured.Any())
+{
+    <div class="section-header">
+        <div class="section-title">SẢN PHẨM NỔI BẬT</div>
+        <a asp-controller="Product" asp-action="Index" class="view-all">Xem tất cả</a>
+    </div>
+
+    <div class="featured-wrapper">
+        <button class="slide-btn prev"><i class="fa fa-chevron-left"></i></button>
+
+        <div class="featured-track">
+            @foreach (var p in featured)
+            {
+                var avgRating = p.Reviews.Any(r => r.Rating.HasValue)
+                ? p.Reviews.Average(r => r.Rating.Value)
+                : 0;
+
+                var totalReviews = p.Reviews.Count(r => r.Rating.HasValue);
+
+                var fullStars = (int)Math.Floor(avgRating);
+                var hasHalfStar = avgRating - fullStars >= 0.5;
+
+                <div class="featured-item">
+                    <a asp-controller="Product"
+                       asp-action="Details"
+                       asp-route-id="@p.ProductId"
+                       class="text-decoration-none text-dark">
+
+                        <img src="/images/products/@(p.MainImage ?? "no-image.jpg")">
+
+                        <div class="featured-name">@p.ProductName</div>
+
+                        <!-- ⭐ RATING -->
+                        <div class="featured-rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= fullStars)
+                                {
+                                    <i class="fa fa-star text-warning"></i>
+                                }
+                                else if (i == fullStars + 1 && hasHalfStar)
+                                {
+                                    <i class="fa fa-star-half-stroke text-warning"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-star text-secondary opacity-25"></i>
+                                }
+                            }
+
+                            <span class="rating-count">
+                                (@totalReviews)
+                            </span>
+                        </div>
+
+                        <div class="featured-price">
+                            @p.Price.ToString("N0")đ
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <button class="slide-btn next"><i class="fa fa-chevron-right"></i></button>
+    </div>
+}
+
+
+<!-- ===== SẢN PHẨM MỚI ===== -->
+<div class="section-header">
+    <div class="section-title">SẢN PHẨM MỚI</div>
+    <a asp-controller="Product" asp-action="Index" class="view-all">Xem tất cả</a>
+</div>
+
+<div class="product-grid">
+    @foreach (var p in newProducts)
+    {
+        var avgRating = p.Reviews != null && p.Reviews.Any(r => r.Rating.HasValue)
+        ? p.Reviews.Where(r => r.Rating.HasValue).Average(r => r.Rating!.Value)
+        : 0;
+
+        var totalReviews = p.Reviews?.Count(r => r.Rating.HasValue) ?? 0;
+
+        <div class="product-card">
+            <a asp-controller="Product"
+               asp-action="Details"
+               asp-route-id="@p.ProductId"
+               class="text-decoration-none text-dark">
+
+                <img src="/images/products/@(p.MainImage ?? "no-image.jpg")" />
+                <div class="product-title">@p.ProductName</div>
+            </a>
+
+            <!-- ⭐ RATING -->
+            <div class="product-rating">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Math.Round(avgRating))
+                    {
+                        <i class="fa fa-star text-warning"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-star text-secondary opacity-25"></i>
+                    }
+                }
+                <span class="rating-count">(@totalReviews)</span>
+            </div>
+
+            <div class="price">@p.Price.ToString("N0")đ</div>
+        </div>
+    }
+</div>
+
+
+<!-- ===== SỬA ĐIỆN THOẠI ===== -->
+<div class="section-header">
+    <div class="section-title">SỬA ĐIỆN THOẠI</div>
+    <a asp-controller="Product"
+       asp-action="Index"
+       asp-route-categoryId="@phoneCatId"
+       class="view-all">
+        Xem tất cả
+    </a>
+</div>
+
+<div class="filter-tags" data-section="phone">
+    <span class="active" data-filter="all">Tất cả</span>
+    <span data-filter="pin">Pin</span>
+    <span data-filter="screen">Màn hình</span>
+    <span data-filter="camera">Camera</span>
+    <span data-filter="main">Main / IC</span>
+    <span data-filter="loa">Loa</span>
+    <span data-filter="rung">Rung</span>
+    <span data-filter="sac">Chân sạc</span>
+    <span data-filter="nut">Nút</span>
+    <span data-filter="sim">SIM</span>
+    <span data-filter="mic">Mic</span>
+    <span data-filter="day">Cáp</span>
+    <span data-filter="vo">Vỏ / Khung</span>
+    <span data-filter="khac">Khác</span>
+</div>
+
+@{
+    var phoneCategoryIds = phoneCatId > 0
+        ? GetAllChildCategoryIds(categories, phoneCatId)
+        : new List<int>();
+}
+
+<div class="product-grid">
+    @foreach (var p in allProducts
+        .Where(x => phoneCategoryIds.Contains(x.CategoryId))
+        .Take(10))
+    {
+        string name = (p.ProductName ?? "").ToLower();
+        string type = "khac";
+
+        if (name.Contains("pin")) type = "pin";
+        else if (name.Contains("màn") || name.Contains("lcd") || name.Contains("oled")) type = "screen";
+        else if (name.Contains("camera") || name.Contains("cam")) type = "camera";
+        else if (name.Contains("main") || name.Contains("ic")) type = "main";
+        else if (name.Contains("loa")) type = "loa";
+        else if (name.Contains("rung")) type = "rung";
+        else if (name.Contains("sạc") || name.Contains("chân sạc")) type = "sac";
+        else if (name.Contains("nút") || name.Contains("nguồn") || name.Contains("volume")) type = "nut";
+        else if (name.Contains("sim")) type = "sim";
+        else if (name.Contains("mic")) type = "mic";
+        else if (name.Contains("cáp") || name.Contains("dây")) type = "day";
+        else if (name.Contains("vỏ") || name.Contains("khung")) type = "vo";
+
+        <div class="product-card filter-item"
+             data-section="phone"
+             data-type="@type">
+
+            <a asp-controller="Product"
+               asp-action="Details"
+               asp-route-id="@p.ProductId"
+               class="text-decoration-none text-dark">
+
+                <img src="/images/products/@(p.MainImage ?? "no-image.jpg")" />
+                <div class="product-title">@p.ProductName</div>
+            </a>
+
+            <div class="price">@p.Price.ToString("N0")đ</div>
+        </div>
+    }
+</div>
+
+
+
+<!-- ===== SỬA LAPTOP ===== -->
+<div class="section-header">
+    <div class="section-title">SỬA LAPTOP</div>
+    <a asp-controller="Product"
+       asp-action="Index"
+       asp-route-categoryId="@laptopCatId"
+       class="view-all">
+        Xem tất cả
+    </a>
+</div>
+
+<div class="filter-tags" data-section="laptop">
+    <span class="active" data-filter="all">Tất cả</span>
+    <span data-filter="pin">Pin</span>
+    <span data-filter="screen">Màn hình</span>
+    <span data-filter="keyboard">Bàn phím</span>
+    <span data-filter="fan">Quạt / Tản nhiệt</span>
+    <span data-filter="main">Mainboard</span>
+    <span data-filter="ram">RAM</span>
+    <span data-filter="ssd">SSD / HDD</span>
+    <span data-filter="sac">Sạc</span>
+    <span data-filter="cap">Cáp</span>
+    <span data-filter="loa">Loa</span>
+    <span data-filter="wifi">Wifi / BT</span>
+    <span data-filter="vo">Vỏ / Khung</span>
+    <span data-filter="khac">Khác</span>
+</div>
+@{
+    // 🔹 LẤY TOÀN BỘ CATEGORY CON + CHÁU CỦA LAPTOP
+    List<int> laptopCategoryIds = new();
+
+    void CollectLaptopCategories(int id)
+    {
+        laptopCategoryIds.Add(id);
+
+        var children = categories
+            .Where(c => c.ParentId == id)
+            .Select(c => c.CategoryId)
+            .ToList();
+
+        foreach (var childId in children)
+        {
+            CollectLaptopCategories(childId);
+        }
+    }
+
+    if (laptopCatId > 0)
+    {
+        CollectLaptopCategories(laptopCatId);
+    }
+}
+
+<div class="product-grid">
+    @foreach (var p in allProducts
+        .Where(x => laptopCategoryIds.Contains(x.CategoryId))
+        .Take(10))
+    {
+        string name = (p.ProductName ?? "").ToLower();
+        string type = "khac";
+
+        if (name.Contains("pin")) type = "pin";
+        else if (name.Contains("màn") || name.Contains("lcd") || name.Contains("oled")) type = "screen";
+        else if (name.Contains("phím") || name.Contains("keyboard")) type = "keyboard";
+        else if (name.Contains("quạt") || name.Contains("tản")) type = "fan";
+        else if (name.Contains("main") || name.Contains("board")) type = "main";
+        else if (name.Contains("ram")) type = "ram";
+        else if (name.Contains("ssd") || name.Contains("hdd")) type = "ssd";
+        else if (name.Contains("sạc") || name.Contains("adapter") || name.Contains("jack")) type = "sac";
+        else if (name.Contains("cáp") || name.Contains("cable") || name.Contains("dây")) type = "cap";
+        else if (name.Contains("loa")) type = "loa";
+        else if (name.Contains("wifi") || name.Contains("bluetooth")) type = "wifi";
+        else if (name.Contains("vỏ") || name.Contains("khung")) type = "vo";
+
+        <div class="product-card filter-item"
+             data-section="laptop"
+             data-type="@type">
+
+            <a asp-controller="Product"
+               asp-action="Details"
+               asp-route-id="@p.ProductId"
+               class="text-decoration-none text-dark">
+
+                <img src="/images/products/@(p.MainImage ?? "no-image.jpg")" />
+                <div class="product-title">@p.ProductName</div>
+            </a>
+
+            <div class="price">@p.Price.ToString("N0")đ</div>
+        </div>
+    }
+</div>
+
+
+<!-- ===== DỤNG CỤ SỬA CHỮA ===== -->
+<div class="section-header">
+    <div class="section-title">DỤNG CỤ SỬA CHỮA</div>
+    <a asp-controller="Product"
+       asp-action="Index"
+       asp-route-categoryId="@toolCatId"
+       class="view-all">
+        Xem tất cả
+    </a>
+</div>
+
+<div class="filter-tags" data-section="tool">
+    <span class="active" data-filter="all">Tất cả</span>
+    <span data-filter="hotair">Máy khò</span>
+    <span data-filter="solder">Hàn</span>
+    <span data-filter="power">Nguồn</span>
+    <span data-filter="multimeter">Đồng hồ đo</span>
+    <span data-filter="microscope">Kính hiển vi</span>
+    <span data-filter="tweezers">Nhíp</span>
+    <span data-filter="screwdriver">Tua vít</span>
+    <span data-filter="cable">Cáp / Dây</span>
+    <span data-filter="cleaner">Vệ sinh</span>
+    <span data-filter="jig">Khuôn / Jig</span>
+    <span data-filter="toolset">Bộ dụng cụ</span>
+    <span data-filter="khac">Khác</span>
+</div>
+
+@{
+    // 🔹 LẤY TOÀN BỘ CATEGORY CON + CHÁU CỦA DỤNG CỤ
+    List<int> toolCategoryIds = new();
+
+    void CollectToolCategories(int id)
+    {
+        toolCategoryIds.Add(id);
+
+        var children = categories
+            .Where(c => c.ParentId == id)
+            .Select(c => c.CategoryId)
+            .ToList();
+
+        foreach (var childId in children)
+        {
+            CollectToolCategories(childId);
+        }
+    }
+
+    if (toolCatId > 0)
+    {
+        CollectToolCategories(toolCatId);
+    }
+}
+
+<div class="product-grid">
+    @foreach (var p in allProducts
+        .Where(x => toolCategoryIds.Contains(x.CategoryId))
+        .Take(10))
+    {
+        string name = (p.ProductName ?? "").ToLower();
+        string type = "khac";
+
+        if (name.Contains("khò") || name.Contains("hot air")) type = "hotair";
+        else if (name.Contains("hàn") || name.Contains("solder")) type = "solder";
+        else if (name.Contains("nguồn") || name.Contains("power")) type = "power";
+        else if (name.Contains("đồng hồ") || name.Contains("multimeter")) type = "multimeter";
+        else if (name.Contains("kính") || name.Contains("microscope")) type = "microscope";
+        else if (name.Contains("nhíp") || name.Contains("tweezer")) type = "tweezers";
+        else if (name.Contains("tua vít") || name.Contains("screwdriver")) type = "screwdriver";
+        else if (name.Contains("cáp") || name.Contains("dây") || name.Contains("cable")) type = "cable";
+        else if (name.Contains("cồn") || name.Contains("vệ sinh") || name.Contains("clean")) type = "cleaner";
+        else if (name.Contains("jig") || name.Contains("khuôn")) type = "jig";
+        else if (name.Contains("bộ") || name.Contains("toolkit")) type = "toolset";
+
+        <div class="product-card filter-item"
+             data-section="tool"
+             data-type="@type">
+
+            <a asp-controller="Product"
+               asp-action="Details"
+               asp-route-id="@p.ProductId"
+               class="text-decoration-none text-dark">
+
+                <img src="/images/products/@(p.MainImage ?? "no-image.jpg")" />
+                <div class="product-title">@p.ProductName</div>
+            </a>
+
+            <div class="price">@p.Price.ToString("N0")đ</div>
+        </div>
+    }
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const track = document.querySelector(".featured-track");
+        if (!track) return;
+
+        const prev = document.querySelector(".slide-btn.prev");
+        const next = document.querySelector(".slide-btn.next");
+
+        let step = 0;
+        let auto;
+
+        function calcStep() {
+            const item = track.querySelector(".featured-item");
+            if (!item) return;
+            step = item.getBoundingClientRect().width + 16;
+        }
+
+        function nextSlide() {
+            if (step === 0) calcStep();
+            track.scrollLeft += step;
+
+            if (track.scrollLeft + track.clientWidth >= track.scrollWidth - step) {
+                track.scrollLeft = 0;
+            }
+        }
+
+        // ⏳ ĐỢI ẢNH LOAD XONG
+        window.addEventListener("load", () => {
+            calcStep();
+            auto = setInterval(nextSlide, 3000);
+        });
+
+        next?.addEventListener("click", nextSlide);
+
+        prev?.addEventListener("click", () => {
+            if (step === 0) calcStep();
+            if (track.scrollLeft <= 0) {
+                track.scrollLeft = track.scrollWidth;
+            }
+            track.scrollLeft -= step;
+        });
+
+        track.addEventListener("mouseenter", () => clearInterval(auto));
+        track.addEventListener("mouseleave", () => {
+            auto = setInterval(nextSlide, 3000);
+        });
+    });
+     /* ===== FILTER ===== */
+    document.querySelectorAll(".filter-tags").forEach(group=>{
+        const section=group.dataset.section;
+        group.querySelectorAll("span").forEach(btn=>{
+            btn.onclick=()=>{
+                group.querySelectorAll("span").forEach(b=>b.classList.remove("active"));
+                btn.classList.add("active");
+                const f=btn.dataset.filter;
+                document.querySelectorAll(`.filter-item[data-section='${section}']`)
+                    .forEach(i=>i.style.display=(f==="all"||i.dataset.type===f)?"block":"none");
+            }
+        });
+    });
+
+</script>
+
+<style>
+    /* ===== TOP WRAPPER ===== */
+    .top-wrapper {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 16px;
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px;
+        border: 1px solid #eee;
+        margin-bottom: 24px;
+    }
+
+    @@media(max - width:992px) {
+        .top-wrapper {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .category-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .category-menu li {
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .category-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #111;
+            text-decoration: none;
+            transition: .25s;
+        }
+
+            .category-menu a:hover {
+                background: #f5f7fa;
+                color: #d70018;
+            }
+
+        .category-menu i.arrow {
+            margin-left: auto;
+            color: #9ca3af
+        }
+
+    /* ===== BANNER ===== */
+    .banner-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 12px;
+    }
+
+    @@media(max - width:768px) {
+        .banner-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .banner-main, .banner-side {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .banner-main img, .banner-side img {
+            width: 100%;
+            //height: 100%;
+            object-fit: cover
+        }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 32px 0 16px;
+    }
+
+    .section-title {
+        font-size: 22px;
+        font-weight: 800;
+        border-left: 5px solid #d70018;
+        padding-left: 12px;
+    }
+
+    .view-all {
+        font-size: 14px;
+        font-weight: 600;
+        color: #d70018;
+        text-decoration: none;
+    }
+
+        .view-all:hover {
+            text-decoration: underline
+        }
+
+    /* ===== FEATURED SLIDER ===== */
+    .featured-wrapper {
+        position: relative;
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #eee;
+        padding: 16px 40px;
+        overflow: hidden;
+    }
+
+    .featured-track {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+    }
+
+        .featured-track::-webkit-scrollbar {
+            display: none
+        }
+
+    .featured-item {
+        min-width: 200px;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 12px;
+        transition: .25s;
+    }
+
+        .featured-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0,0,0,.12);
+        }
+
+        .featured-item img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
+
+    .featured-name {
+        font-size: 14px;
+        font-weight: 600;
+        height: 36px;
+        overflow: hidden;
+        margin: 8px 0;
+    }
+
+    .featured-price {
+        color: #d70018;
+        font-weight: 800;
+    }
+
+    .slide-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #fff;
+        border: 1px solid #ddd;
+        cursor: pointer;
+    }
+
+        .slide-btn.prev {
+            left: 8px
+        }
+
+        .slide-btn.next {
+            right: 8px
+        }
+
+    /* ===== FILTER ===== */
+    .filter-tags {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+        .filter-tags span {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #f1f3f5;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+            .filter-tags span.active,
+            .filter-tags span:hover {
+                background: #d70018;
+                color: #fff
+            }
+
+    /* ===== PRODUCT GRID ===== */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(5,1fr);
+        gap: 16px;
+    }
+
+    @@media(max - width:1200px) {
+        .product-grid {
+            grid-template-columns: repeat(4,1fr)
+        }
+    }
+
+    @@media(max - width:768px) {
+        .product-grid {
+            grid-template-columns: repeat(2,1fr)
+        }
+    }
+
+    .product-card {
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #eee;
+        padding: 12px;
+        transition: .25s;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0,0,0,.12);
+        }
+
+        .product-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
+
+    .product-title {
+        font-size: 14px;
+        font-weight: 600;
+        height: 40px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .price {
+        color: #d70018;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .featured-rating {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 13px;
+        margin: 4px 0 6px;
+    }
+
+        .featured-rating .rating-count {
+            margin-left: 4px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+    /* ===============================
+       FIX DOTS POSITION (BELOW IMAGE)
+       =============================== */
+
+    /* Cho banner-main có khoảng trống dưới */
+    .banner-main {
+        position: relative;
+        padding-bottom: 28px; /* chừa chỗ cho dots */
+    }
+
+    /* Đẩy indicators ra dưới ảnh */
+    .carousel-indicators {
+        position: absolute;
+        bottom: -18px; /* NẰM NGOÀI ẢNH */
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+    }
+
+        /* Style dots gọn gàng */
+        .carousel-indicators [data-bs-target] {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #d1d5db;
+            margin: 0 5px;
+            border: none;
+            opacity: 1;
+            transition: all .2s ease;
+        }
+
+        .carousel-indicators .active {
+            width: 18px;
+            border-radius: 999px;
+            background-color: #111;
+        }
+
+</style>
+@functions {
+    List<int> GetAllChildCategoryIds(List<Category> all, int parentId)
+    {
+        var result = new List<int> { parentId };
+
+        var children = all
+            .Where(c => c.ParentId == parentId)
+            .Select(c => c.CategoryId)
+            .ToList();
+
+        foreach (var child in children)
+        {
+            result.AddRange(GetAllChildCategoryIds(all, child));
+        }
+
+        return result;
+    }
+}

@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Liên hệ";
+}
+
+<h3 class="fw-bold text-primary mb-4 text-center">Liên hệ iFixZone</h3>
+
+<div class="row g-4">
+    <!-- THÔNG TIN LIÊN HỆ -->
+    <div class="col-md-5">
+        <div class="card shadow-sm rounded-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Thông tin liên hệ</h5>
+
+                <p>
+                    <i class="fa fa-location-dot me-2 text-danger"></i>
+                    Hà Nội, Việt Nam
+                </p>
+
+                <p>
+                    <i class="fa fa-phone me-2 text-danger"></i>
+                    0399 355 483
+                </p>
+
+                <p>
+                    <i class="fa fa-envelope me-2 text-danger"></i>
+                    dinhmobile35@gmail.com
+                </p>
+
+                <p>
+                    <i class="fa fa-clock me-2 text-danger"></i>
+                    08:00 – 21:00 (Thứ 2 – CN)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORM LIÊN HỆ -->
+    <div class="col-md-7">
+        <div class="card shadow-sm rounded-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Gửi liên hệ cho chúng tôi</h5>
+
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Họ và tên</label>
+                        <input type="text" class="form-control" placeholder="Nhập họ tên" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" placeholder="example@gmail.com" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nội dung</label>
+                        <textarea class="form-control" rows="4"
+                                  placeholder="Nhập nội dung liên hệ"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fa fa-paper-plane me-2"></i> Gửi liên hệ
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

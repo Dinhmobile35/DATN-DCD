@@ -1,0 +1,52 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.User>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý phân quyền";
+}
+
+<h4 class="fw-bold mb-3">
+    <i class="fa-solid fa-users-gear"></i> Quản lý vai trò
+</h4>
+
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Tài khoản</th>
+            <th>Họ tên</th>
+            <th>Quyền</th>
+            <th width="120"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Username</td>
+                <td>@u.FullName</td>
+
+                <td>
+                    @if (u.Roles.Count == 0)
+                    {
+                        <span class="badge bg-secondary">Chưa gán</span>
+                    }
+                    else
+                    {
+                        foreach (var r in u.Roles)
+                        {
+                            <span class="badge bg-primary">@r.RoleName</span>
+                        }
+                    }
+                </td>
+
+                <td>
+                    <a class="btn btn-sm btn-warning"
+                       asp-action="Assign"
+                       asp-route-id="@u.UserId">
+                        Phân quyền
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

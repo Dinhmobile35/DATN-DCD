@@ -1,0 +1,191 @@
+﻿@model IFixZoneWeb.Models.Entities.Product
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = $"Quản lý thông số - {Model.ProductName}";
+}
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h4 class="fw-bold mb-1">
+                <i class="fa-solid fa-cog me-2 text-primary"></i>
+                Thông số kỹ thuật
+            </h4>
+            <div class="text-muted">@Model.ProductName</div>
+        </div>
+
+        <a asp-action="Edit"
+           asp-controller="ProductAdmin"
+           asp-route-id="@Model.ProductId"
+           class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+        </a>
+    </div>
+
+    <!-- ADD SPEC -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light fw-semibold">
+            <i class="fa-solid fa-plus me-2 text-success"></i>
+            Thêm thông số kỹ thuật
+        </div>
+
+        <div class="card-body">
+            <form asp-action="AddSpecification"
+                  asp-controller="ProductAdmin"
+                  method="post"
+                  class="needs-validation"
+                  novalidate>
+
+                <input type="hidden" name="productId" value="@Model.ProductId" />
+
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold">Tên thông số</label>
+                        <input type="text"
+                               name="specName"
+                               class="form-control"
+                               placeholder="VD: CPU, RAM..."
+                               required />
+                        <div class="invalid-feedback">Vui lòng nhập tên thông số</div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold">Giá trị</label>
+                        <input type="text"
+                               name="specValue"
+                               class="form-control"
+                               placeholder="VD: Intel Core i7, 16GB..."
+                               required />
+                        <div class="invalid-feedback">Vui lòng nhập giá trị</div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button class="btn btn-success w-100">
+                            <i class="fa-solid fa-plus me-1"></i> Thêm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">
+                <i class="fa-solid fa-list me-2 text-primary"></i>
+                Danh sách thông số
+            </span>
+            <span class="text-muted">
+                @(Model.ProductSpecifications?.Count ?? 0) mục
+            </span>
+        </div>
+
+        <div class="card-body p-0">
+            @if (Model.ProductSpecifications == null || !Model.ProductSpecifications.Any())
+            {
+                <div class="text-center text-muted py-5">
+                    <i class="fa-solid fa-list fa-4x mb-3 opacity-50"></i>
+                    <div>Chưa có thông số kỹ thuật</div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tên thông số</th>
+                                <th>Giá trị</th>
+                                <th class="text-center" style="width:220px">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var spec in Model.ProductSpecifications.OrderBy(s => s.SpecName))
+                        {
+                            <tr>
+                                <td class="fw-semibold">@spec.SpecName</td>
+                                <td>@spec.SpecValue</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1">
+
+                                        <form asp-action="EditSpecification"
+                                              asp-controller="ProductAdmin"
+                                              method="post"
+                                              class="d-flex gap-1">
+
+                                            <input type="hidden" name="specId" value="@spec.SpecId" />
+
+                                            <input type="text"
+                                                   name="specName"
+                                                   value="@spec.SpecName"
+                                                   class="form-control form-control-sm"
+                                                   style="width:140px"
+                                                   required />
+
+                                            <input type="text"
+                                                   name="specValue"
+                                                   value="@spec.SpecValue"
+                                                   class="form-control form-control-sm"
+                                                   style="width:200px"
+                                                   required />
+
+                                            <button class="btn btn-sm btn-success"
+                                                    title="Lưu">
+                                                <i class="fa-solid fa-save"></i>
+                                            </button>
+                                        </form>
+
+                                            <form asp-action="DeleteSpecification"
+                                                  asp-controller="ProductAdmin"
+                                                  method="post"
+                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa thông số này?');">
+
+
+                                            <input type="hidden" name="specId" value="@spec.SpecId" />
+
+                                            <button class="btn btn-sm btn-danger"
+                                                    title="Xóa">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <div class="card-footer bg-light text-center">
+            <small class="text-muted">
+                Tổng cộng: @(Model.ProductSpecifications?.Count ?? 0) thông số
+            </small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('input[name="specName"]')?.focus();
+
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        });
+    </script>
+}

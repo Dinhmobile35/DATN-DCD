@@ -1,0 +1,336 @@
+﻿@model IFixZoneWeb.Models.Entities.Cart
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<!-- NÚT QUAY LẠI -->
+<a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mb-3 d-inline-flex align-items-center">
+    <i class="fa fa-arrow-left me-2"></i> Quay lại
+</a>
+
+<h3 class="mb-4 fw-bold text-center text-primary">Giỏ hàng của bạn</h3>
+
+@if (Model.CartItems == null || !Model.CartItems.Any())
+{
+    <div class="alert alert-info text-center py-5 shadow-sm rounded-4">
+        <i class="fa fa-shopping-cart fa-3x mb-3 text-muted"></i>
+        <p class="fs-5 mb-3">Giỏ hàng của bạn đang trống!</p>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-primary px-4">
+            Tiếp tục mua sắm
+        </a>
+    </div>
+}
+else
+{
+    <form asp-controller="Checkout"
+          asp-action="Index"
+          method="get"
+          id="checkoutForm">
+
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-0">
+                <!-- SELECT ALL -->
+                <div class="p-3 bg-light border-bottom d-flex align-items-center">
+                    <input type="checkbox" id="checkAll" class="form-check-input me-2" />
+                    <label for="checkAll" class="form-check-label fw-bold">Chọn tất cả</label>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 cart-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="50" class="text-center"></th>
+                                <th width="100">Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th class="text-center">Giá</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Thành tiền</th>
+                                <th width="60"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartBody">
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <tr data-id="@item.CartItemId"
+                                    data-price="@item.Product.Price"
+                                    data-qty="@item.Quantity">
+                                    <td class="text-center align-middle">
+                                        <input type="checkbox" class="item-check form-check-input"
+                                               name="selectedCartItemIds" value="@item.CartItemId" />
+                                    </td>
+                                    <td class="align-middle">
+                                        <img src="~/images/products/@(item.Product.MainImage ?? "no-image.jpg")"
+                                             class="rounded border" width="70" alt="@item.Product.ProductName" />
+                                    </td>
+                                    <td class="fw-semibold align-middle">
+                                        <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId"
+                                           class="text-dark text-decoration-none hover-link">
+                                            @item.Product.ProductName
+                                        </a>
+                                    </td>
+                                    <td class="text-danger fw-bold text-center align-middle price">
+                                        @item.Product.Price.ToString("N0") ₫
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <input type="number" class="form-control text-center qty rounded-pill"
+                                               value="@item.Quantity" min="1" data-id="@item.CartItemId" />
+                                    </td>
+                                    <td class="fw-bold text-end align-middle subtotal">
+                                        @((item.Quantity * item.Product.Price).ToString("N0")) ₫
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove"
+                                                data-id="@item.CartItemId">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TỔNG TIỀN TẠM TÍNH & THANH TOÁN -->
+        <div class="card shadow-sm mt-4 rounded-4">
+            <div class="card-body d-flex justify-content-between align-items-center p-4">
+                <div class="fw-bold fs-5">
+                    Tổng tiền tạm tính:
+                    <span id="tempTotal" class="text-danger ms-2 fs-4">0 ₫</span>
+                </div>
+                <button type="submit" id="btnCheckout" class="btn btn-danger btn-lg px-5" disabled>
+                    <i class="fa-solid fa-credit-card me-2"></i> Thanh toán
+                </button>
+            </div>
+        </div>
+    </form>
+}
+
+@section Scripts {
+    <script>
+        // Format số tiền Việt Nam
+        function formatMoney(v) {
+            return Number(v).toLocaleString("vi-VN") + " ₫";
+        }
+
+        // Tính tổng tạm tính và kiểm tra nút thanh toán
+        function calcTempTotal() {
+            let total = 0;
+            let hasChecked = false;
+
+            document.querySelectorAll(".item-check:checked").forEach(cb => {
+                hasChecked = true;
+                const tr = cb.closest("tr");
+                const price = parseFloat(tr.dataset.price) || 0;
+                const qty = parseFloat(tr.dataset.qty) || 0;
+                total += price * qty;
+            });
+
+            document.getElementById("tempTotal").innerText = formatMoney(total);
+
+            // Nút thanh toán active khi có ít nhất 1 sản phẩm được chọn
+            const btnCheckout = document.getElementById("btnCheckout");
+            btnCheckout.disabled = !hasChecked;
+        }
+
+        // Check all
+        document.getElementById("checkAll")?.addEventListener("change", e => {
+            document.querySelectorAll(".item-check").forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+            calcTempTotal();
+        });
+
+        // Check single item
+        document.querySelectorAll(".item-check").forEach(cb => {
+            cb.addEventListener("change", calcTempTotal);
+        });
+
+        // Update quantity
+        document.querySelectorAll(".qty").forEach(input => {
+            input.addEventListener("change", e => {
+                let qty = parseInt(e.target.value) || 1;
+                if (qty < 1) {
+                    qty = 1;
+                    e.target.value = 1;
+                }
+                const tr = e.target.closest("tr");
+                tr.dataset.qty = qty;
+                const id = tr.dataset.id;
+
+                fetch("/Cart/UpdateQuantity", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `cartItemId=${id}&quantity=${qty}`
+                })
+                .then(r => r.json())
+                .then(res => {
+                    if (res.success) {
+                        tr.querySelector(".subtotal").innerText = formatMoney(res.subtotal);
+                       
+                        calcTempTotal();
+                    } else {
+                        alert(res.message || "Cập nhật thất bại");
+                    }
+                })
+                .catch(() => alert("Lỗi kết nối"));
+            });
+        });
+
+        // Remove item
+        document.querySelectorAll(".remove").forEach(btn => {
+            btn.addEventListener("click", e => {
+                if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
+                const tr = e.target.closest("tr");
+                const id = tr.dataset.id;
+
+                fetch("/Cart/RemoveItem", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `cartItemId=${id}`
+                })
+                .then(r => r.json())
+                .then(res => {
+                    if (res.success) {
+                        tr.remove();
+                        location.reload();
+                    } else {
+                        alert(res.message || "Xóa thất bại");
+                    }
+                })
+                .catch(() => alert("Lỗi kết nối"));
+            });
+        });
+
+        // Tính ngay khi load trang
+        calcTempTotal();
+    </script>
+}
+
+<style>
+    .text-primary {
+        --bs-text-opacity: 1;
+        color: rgb(253 13 13) !important;
+    }
+    .cart-table {
+        border-collapse: separate;
+        border-spacing: 0 14px;
+    }
+
+        .cart-table thead {
+            display: none;
+        }
+
+        .cart-table tbody tr {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,.08);
+            transition: .25s;
+        }
+
+            .cart-table tbody tr:hover {
+                box-shadow: 0 12px 28px rgba(0,0,0,.12);
+            }
+            /* highlight khi tick */
+            .cart-table tbody tr:has(.item-check:checked) {
+                border: 2px solid #d70018;
+                background: #fff5f5;
+            }
+
+        .cart-table td {
+            border: none !important;
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .cart-table img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            background: #f3f4f6;
+            border-radius: 14px;
+        }
+
+    .item-check {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+    }
+
+    .hover-link {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+        .hover-link:hover {
+            color: #d70018 !important;
+            text-decoration: underline;
+        }
+
+    .price {
+        font-size: 15px;
+    }
+
+    .qty {
+        width: 90px;
+        border-radius: 999px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .remove {
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+    }
+
+    .card.shadow-sm.mt-4 {
+        position: sticky;
+        bottom: 20px;
+        z-index: 5;
+    }
+
+        .card.shadow-sm.mt-4 .card-body {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,.15);
+        }
+
+    #btnCheckout {
+        background: #d70018;
+        border: none;
+        border-radius: 14px;
+    }
+
+        #btnCheckout:hover {
+            background: #b80014;
+        }
+
+        #btnCheckout:disabled {
+            background: #d1d5db !important;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    @@media (max-width: 768px) {
+        .cart-table td
+
+    {
+        padding: 12px;
+    }
+
+    .qty {
+        width: 70px;
+    }
+
+    .hover-link {
+        font-size: 14px;
+    }
+
+    .price {
+        font-size: 14px;
+    }
+
+    }
+</style>

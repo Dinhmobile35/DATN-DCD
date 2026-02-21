@@ -1,0 +1,197 @@
+﻿@model IEnumerable<IFixZoneWeb.Models.Entities.Product>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+        <i class="fa-solid fa-box me-2 text-primary"></i>
+        Quản lý sản phẩm
+    </h4>
+
+    <a class="btn btn-success"
+       asp-action="Edit">
+        <i class="fa-solid fa-plus me-1"></i> Thêm sản phẩm
+    </a>
+</div>
+
+<!-- FILTER + SORT -->
+<form method="get" class="card shadow-sm border-0 mb-4">
+    <div class="card-body row g-2 align-items-end">
+
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Tìm kiếm</label>
+            <input name="q"
+                   value="@ViewBag.Query"
+                   class="form-control"
+                   placeholder="Tên sản phẩm..." />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Trạng thái</label>
+            <select name="status" class="form-select">
+                <option value="">-- Tất cả --</option>
+                <option value="Active" selected="@(ViewBag.Status == "Active")">Đang bán</option>
+                <option value="Inactive" selected="@(ViewBag.Status == "Inactive")">Ngừng bán</option>
+                <option value="Hidden" selected="@(ViewBag.Status == "Hidden")">Ẩn</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Sắp xếp</label>
+            <select name="sort" class="form-select">
+                <option value="">Mới nhất</option>
+                <option value="price_asc" selected="@(ViewBag.Sort == "price_asc")">Giá tăng dần</option>
+                <option value="price_desc" selected="@(ViewBag.Sort == "price_desc")">Giá giảm dần</option>
+                <option value="stock_asc" selected="@(ViewBag.Sort == "stock_asc")">Kho tăng dần</option>
+                <option value="stock_desc" selected="@(ViewBag.Sort == "stock_desc")">Kho giảm dần</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                <i class="fa-solid fa-filter me-1"></i> Lọc
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- TABLE -->
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-center">
+                <tr>
+                    <th style="width:80px">Ảnh</th>
+                    <th class="text-start">Sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Kho</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th style="width:260px">Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @if (!string.IsNullOrEmpty(p.MainImage))
+                            {
+                                <img src="~/images/products/@p.MainImage"
+                                     class="rounded shadow-sm"
+                                     style="width:60px;height:60px;object-fit:cover" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold">@p.ProductName</div>
+                            <small class="text-muted">ID: @p.ProductId</small>
+                        </td>
+
+                        <td class="text-end fw-semibold text-danger">
+                            @p.Price.ToString("N0") đ
+                        </td>
+
+                        <td class="text-center">
+                            @if (p.Stock == 0)
+                            {
+                                <span class="badge bg-danger px-3">Hết</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success px-3">@p.Stock</span>
+                            }
+                    </td>
+
+                    <td class="text-center">
+                        <span class="badge
+                            @(p.Status == "Active" ? "bg-success" :
+                                                            p.Status == "Inactive" ? "bg-warning text-dark" :
+                                                            "bg-secondary")">
+                            @p.Status
+                        </span>
+                    </td>
+
+                        <td class="text-center">
+                        @if (p.CreatedAt.HasValue)
+                            {
+                                @p.CreatedAt.Value.ToString("dd/MM/yyyy")
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+
+                        </td>
+
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+
+                                <a class="btn btn-sm btn-warning"
+                                   asp-action="Edit"
+                                   asp-route-id="@p.ProductId"
+                                   asp-route-q="@ViewBag.Query"
+                                   asp-route-status="@ViewBag.Status"
+                                   asp-route-sort="@ViewBag.Sort">
+                                    <i class="fa-solid fa-pen me-1"></i>Sửa
+                                </a>
+
+                                <a class="btn btn-sm btn-primary"
+                                   asp-action="ManageSpecifications"
+                                   asp-route-productId="@p.ProductId">
+                                    <i class="fa-solid fa-list me-1"></i>Thông số
+                                    <span class="badge bg-light text-dark ms-1">
+                                        @p.ProductSpecifications.Count
+                                    </span>
+                                </a>
+
+                                <form asp-action="Delete"
+                                      asp-route-id="@p.ProductId"
+                                      method="post"
+                                      onsubmit="return confirm('Bạn có chắc chắn xóa sản phẩm này?');">
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="fa-solid fa-trash me-1"></i>Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- PAGINATION -->
+@{
+    var page = (int)ViewBag.Page;
+    var size = (int)ViewBag.PageSize;
+    var total = (int)ViewBag.Total;
+    var pages = (int)Math.Ceiling(total / (double)size);
+}
+
+@if (pages > 1)
+{
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center pagination-sm">
+            @for (int i = 1; i <= pages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a class="page-link"
+                       href="?page=@i&q=@ViewBag.Query&status=@ViewBag.Status&sort=@ViewBag.Sort">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

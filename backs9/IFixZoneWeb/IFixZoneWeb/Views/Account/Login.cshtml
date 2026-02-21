@@ -1,0 +1,81 @@
+﻿@model IFixZoneWeb.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+
+        <h3 class="text-center mb-4 fw-bold text-primary">
+            <i class="fa-solid fa-user-lock me-2"></i> Đăng nhập iFixZone
+        </h3>
+
+        <!-- THÔNG BÁO LỖI (ModelState) -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <i class="fa-solid fa-circle-exclamation me-1"></i>
+                @Html.ValidationSummary(false)
+            </div>
+        }
+
+        <!-- ĐĂNG KÝ THÀNH CÔNG -->
+        @if (TempData["RegisterSuccess"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fa-solid fa-circle-check me-1"></i>
+                @TempData["RegisterSuccess"]
+            </div>
+        }
+
+        <form asp-action="Login"
+              method="post"
+              class="card p-4 shadow-sm rounded-4">
+
+            @Html.AntiForgeryToken()
+
+            <!-- RETURN URL -->
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label fw-semibold">
+                    <i class="fa-solid fa-user me-1"></i> Tên đăng nhập
+                </label>
+                <input asp-for="Username"
+                       class="form-control"
+                       autocomplete="username"
+                       autofocus />
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-semibold">
+                    <i class="fa-solid fa-lock me-1"></i> Mật khẩu
+                </label>
+                <input asp-for="Password"
+                       type="password"
+                       class="form-control"
+                       autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2">
+                <i class="fa-solid fa-right-to-bracket me-1"></i> Đăng nhập
+            </button>
+        </form>
+
+        <p class="text-center mt-3 mb-0">
+            Chưa có tài khoản?
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="fw-bold text-success text-decoration-none">
+                Đăng ký ngay
+            </a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

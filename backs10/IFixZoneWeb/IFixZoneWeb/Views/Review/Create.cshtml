@@ -1,0 +1,87 @@
+﻿@model List<IFixZoneWeb.Models.ViewModels.ReviewProductViewModel>
+
+@{
+    ViewData["Title"] = "Đánh giá sản phẩm";
+    var order = ViewBag.Order as IFixZoneWeb.Models.Entities.Order;
+    var orderId = ViewBag.OrderId;
+}
+
+<div class="container py-5">
+    <h3 class="fw-bold mb-4">
+        <i class="fa-solid fa-star"></i> Đánh giá sản phẩm - Đơn hàng #@order?.OrderCode
+    </h3>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-4">
+            <i class="fa-solid fa-check-circle fa-3x mb-3"></i>
+            <p>Bạn đã đánh giá tất cả sản phẩm trong đơn hàng này.</p>
+            <a asp-controller="Order" asp-action="History" class="btn btn-primary mt-3">Quay lại lịch sử đơn hàng</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var detail in Model)
+            {
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                <img src="~/images/products/@(detail.MainImage ?? "no-image.jpg")"
+                                     alt="@detail.ProductName"
+                                     style="width:80px; height:80px; object-fit:contain;"
+                                     class="me-3 border rounded" />
+                                <div>
+                                    <h6 class="mb-1">@detail.ProductName</h6>
+                                    <small class="text-muted">Số lượng: @detail.Quantity</small>
+                                </div>
+                            </div>
+
+                            <form asp-action="Create" method="post">
+                                <input type="hidden" name="orderId" value="@orderId" />
+                                <input type="hidden" name="productId" value="@detail.ProductId" />
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Điểm đánh giá (1-5)</label>
+                                    <select name="rating" class="form-select" required>
+                                        <option value="1">1 sao</option>
+                                        <option value="2">2 sao</option>
+                                        <option value="3">3 sao</option>
+                                        <option value="4">4 sao</option>
+                                        <option value="5" selected>5 sao</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Nhận xét</label>
+                                    <textarea name="comment" class="form-control" rows="4" placeholder="Chia sẻ cảm nhận của bạn..."></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fa-solid fa-star me-2"></i>Gửi đánh giá
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a asp-controller="Order" asp-action="History" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i>Quay lại lịch sử đơn hàng
+        </a>
+    </div>
+</div>
